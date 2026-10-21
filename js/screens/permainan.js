@@ -20,13 +20,19 @@ export function tampilPermainan(app, id) {
   }
   const p = profil.aktif();
 
+  const wadah = el('div', { class: 'area-game', id: `game-${def.id}` });
   let css = null;
   if (def.css) {
+    // Sembunyikan game sampai CSS-nya termuat, supaya tidak berkedip tanpa gaya.
     css = el('link', { rel: 'stylesheet', href: def.css, 'data-game': def.id });
+    wadah.style.visibility = 'hidden';
+    const tampilkan = () => { wadah.style.visibility = ''; };
+    css.addEventListener('load', tampilkan, { once: true });
+    css.addEventListener('error', tampilkan, { once: true });
+    setTimeout(tampilkan, 1500);
     document.head.append(css);
   }
 
-  const wadah = el('div', { class: 'area-game', id: `game-${def.id}` });
   app.replaceChildren(el('main', { class: 'layar-game' },
     el('header', { class: 'bilah-game' },
       el('button', { class: 'tombol kedua', type: 'button', onclick: () => ke('/hub') }, '← Kembali ke menu'),

@@ -1,10 +1,42 @@
 # Taman Game Belajar
 
-Kumpulan game edukasi untuk anak SD kelas 4–6 (Kurikulum Merdeka), dengan muatan nilai Islami.
+Kumpulan 8 game edukasi untuk anak SD kelas 4–6 (Kurikulum Merdeka), dengan muatan nilai Islami.
 Aplikasi web statis: HTML, CSS, dan JavaScript vanilla (ES modules), tanpa server, tanpa build tool,
-dan tanpa dependensi luar. Progres disimpan di `localStorage` browser masing-masing perangkat.
+tanpa dependensi luar, dan tanpa request jaringan ke luar. Semua gambar dan suara dibuat dengan kode.
+Progres disimpan di `localStorage` browser masing-masing perangkat. Setelah dibuka sekali, aplikasi bisa
+dipakai tanpa internet dan bisa dipasang seperti aplikasi (PWA).
 
-> Status: **Tahap 11**. Game: Blok Petualang, Catur, Jelajah Nusantara, Petualangan Kata, Kebun Ceria, Pasangan Kilat, Pasar Mini, Ular Tangga Matematika. README ini dilengkapi di Tahap 12.
+## Daftar game
+
+| Game | Kelas | Belajar apa |
+|---|---|---|
+| Blok Petualang | 4–6 | Dunia blok: perkalian/pembagian saat membuat barang, luas & keliling, misi IPA, ejaan |
+| Catur | 4–6 | Lawan komputer 3 tingkat, main berdua, Belajar Bidak, 18 puzzle skakmat |
+| Jelajah Nusantara | 4–6 | Peta 38 provinsi, ibu kota, rumah adat, budaya, sejarah Islam Nusantara |
+| Petualangan Kata | 4–6 | Labirin huruf: ejaan baku, imbuhan, kata ulang, kosakata IPA & Islami |
+| Kebun Ceria | 4–6 | Siklus hidup tumbuhan, pengurai/kompos, pecahan & persen saat berbagi panen |
+| Pasangan Kilat | 4–6 | Memori kartu: hitung cepat, pecahan senilai, kata, ciri makhluk hidup |
+| Pasar Mini | 4–6 | Uang rupiah: total belanja, diskon, kembalian, kejujuran, infak |
+| Ular Tangga Matematika | 4–6 | 2–4 pemain di satu perangkat, soal matematika sesuai kelas tiap pemain |
+
+Soal di dalam game diambil dari bank soal (Matematika, Bahasa Indonesia, IPA, Pengetahuan Umum, PAI) sesuai kelas
+profil. Hasilnya tercatat di **Mode Guru**.
+
+## Untuk orang tua dan guru
+
+- **Profil**: setiap anak membuat profil (nama, avatar, kelas 4/5/6). Kelas bisa diubah saat naik kelas.
+- **Simpan progres**: progres hanya ada di browser perangkat itu. Pakai **Ekspor Progres** di menu utama untuk membuat
+  berkas cadangan (`.json`), lalu **Impor Progres** di perangkat lain atau setelah data browser terhapus.
+  Membersihkan data/riwayat browser juga menghapus progres.
+- **Pasang aplikasi**: buka **Pengaturan → Pasang aplikasi & offline**. Di Chrome/Edge (Android, Windows, Chromebook)
+  muncul tombol 📲 Pasang aplikasi. Di iPad/iPhone: buka di Safari → tombol Bagikan → **Tambahkan ke Layar Utama**.
+- **Tanpa internet**: setelah aplikasi dibuka sekali saat online (dan halaman dimuat ulang sekali), semua game bisa
+  dimainkan offline. Status offline terlihat di Pengaturan.
+- **Mode Guru** (PIN bawaan 1234): statistik soal per mapel/topik, ekspor CSV, melihat dan mencoba isi bank soal,
+  reset progres. Lihat bagian Mode Guru di bawah.
+- **Konten yang perlu dicek**: data yang diragukan ditandai `cek: true` atau komentar `TODO verifikasi` di folder
+  `data/`, terutama soal PAI, data budaya/sejarah, dan data wilayah yang bisa berubah. Soal bertanda ini bisa disaring
+  di Mode Guru → Lihat & coba soal.
 
 ## Menjalankan di komputer sendiri
 
@@ -37,14 +69,27 @@ Karena itu semua path di kode wajib relatif (jangan diawali `/`).
 Jalankan server di laptop, lalu dari tablet buka `http://<IP-laptop>:8000/`.
 (Service worker/offline tidak aktif lewat alamat ini; itu normal.)
 
+### Menguji offline (service worker)
+
+Service worker sengaja tidak aktif di `localhost` agar file tidak tertahan di cache saat pengembangan.
+Untuk mengujinya:
+
+1. Jalankan server subfolder di atas, lalu buka <http://localhost:8001/taman-bermain/?sw> (tambahan `?sw` mengaktifkan
+   service worker di localhost). Muat ulang sekali; di Pengaturan harus tertulis "Siap dipakai tanpa internet".
+2. Matikan server (Ctrl+C), lalu muat ulang halaman. Semua game, Mode Guru, dan komputer catur harus tetap jalan.
+3. Setelah selesai, hapus service worker uji agar tidak mengganggu pengembangan: DevTools → Application →
+   Service workers → Unregister, lalu Storage → Clear site data (hanya untuk `localhost:8001`; progres di port itu ikut terhapus).
+
 ## Struktur
 
 ```
-index.html, manifest.json, sw.js, ikon.svg, .nojekyll
+index.html, manifest.json, sw.js, .nojekyll
+ikon.svg, ikon-*.png  ikon aplikasi (PNG dibuat oleh alat/buat-ikon.py)
+alat/           skrip bantu pengembang (tidak dimuat aplikasi)
 css/            base.css, hub.css, satu css per game
 data/           bank soal (questions.js + soal/), avatar, ungkapan, data tiap game (mis. nusantara.js)
 js/main.js      titik masuk
-js/core/        storage, profile, router, registry, ui, audio, quiz, quiz-ui, teacher, mapel, cadangan
+js/core/        storage, profile, router, registry, ui, audio, quiz, quiz-ui, teacher, mapel, cadangan, pwa
 js/screens/     layar profil, hub, permainan, pengaturan
 js/games/<id>/  satu folder per game; daftar di js/games/index.js
 ```
@@ -165,6 +210,10 @@ File uji tiap game ada di `js/games/<id>/uji.js` dan didaftarkan di `uji/index.j
 PIN bawaan: **1234** (segera ganti di Mode Guru → Keamanan). PIN hanya pengaman ringan agar
 anak tidak menghapus data tanpa sengaja; kode aplikasi bersifat publik.
 
+Isi Mode Guru: statistik soal per profil (per mapel dan topik, dihitung dari percobaan pertama), ekspor statistik
+ke CSV/JSON, Lihat & coba soal (termasuk saringan soal bertanda `cek`), reset progres atau hapus satu profil,
+ganti PIN, dan hapus semua data perangkat.
+
 ## Bank soal
 
 Soal ada di `data/soal/` (satu file per mapel: `matematika.js`, `bahasa.js`, `ipa.js`, `nusantara.js`, `pai.js`),
@@ -229,5 +278,60 @@ File `.nojekyll` sudah ada agar GitHub Pages tidak memproses file dengan Jekyll.
 
 ### Saat ada update
 
-Setiap kali mengubah file, buka `sw.js`, naikkan `VERSI_CACHE` (mis. `tgb-v1` → `tgb-v2`), dan pastikan
+Setiap kali mengubah file, buka `sw.js`, naikkan `VERSI_CACHE` (mis. `tgb-v12` → `tgb-v13`), dan pastikan
 file baru ada di `BERKAS`. Tanpa itu, pengguna yang pernah membuka aplikasi tetap melihat versi lama.
+Setelah versi baru terpasang, aplikasi menampilkan pesan agar halaman dimuat ulang.
+
+Cek cepat bahwa `BERKAS` sama dengan file di repo (Git Bash; tanpa keluaran = cocok):
+
+```bash
+diff <(sed -n "/const BERKAS/,/];/p" sw.js | grep -o "'[^']*'" | tr -d "'" | grep -v '^\./$' | sort) <(git ls-files --others --cached --exclude-standard | grep -v '^test.html$\|^uji/\|/uji.js$\|^\.\|README\|^sw.js$\|^alat/' | sort)
+```
+
+## Browser yang didukung
+
+Dibutuhkan browser modern yang mendukung ES modules dengan *top-level await*:
+
+- Chrome / Edge / Samsung Internet versi 89 ke atas (Android, Windows, Chromebook)
+- Firefox 89 ke atas
+- Safari 15 ke atas (iPad/iPhone dengan iPadOS/iOS 15+, Mac)
+
+Catatan:
+
+- Selama pengembangan, aplikasi diuji di browser berbasis Chromium (desktop, ukuran tablet 768 px, dan ponsel 375 px).
+  Firefox dan Safari belum diuji langsung; kodenya tidak memakai fitur khusus Chromium, tetapi tetap disarankan
+  mencoba sebentar di perangkat anak.
+- Firefox di bawah versi 114 tidak mendukung *module worker*; komputer catur otomatis berpikir di thread utama
+  (tetap jalan, hanya layar bisa tersendat sebentar di tingkat Sulit).
+- Di iPad/iPhone, suara baru bisa berbunyi setelah layar disentuh pertama kali (aturan Safari). Jika perangkat dalam
+  mode senyap, efek suara juga tidak terdengar.
+- Mode penyamaran/privat bisa menolak `localStorage`; aplikasi memberi peringatan bahwa progres tidak tersimpan.
+
+## Aksesibilitas dan kenyamanan
+
+- Tombol besar (48–56 px), teks dasar 20 px, warna kontras tinggi, fokus keyboard terlihat jelas (bingkai kuning).
+- Semua tombol punya nama untuk pembaca layar; dialog soal mengunci fokus dan bisa dijawab dengan keyboard.
+- Game bisa dimainkan dengan sentuhan, mouse, atau keyboard (Blok: panah/WASD; Petualangan Kata: panah/WASD + Spasi;
+  Jelajah Nusantara: Tab ke pin provinsi + Enter).
+- Animasi dikurangi otomatis jika perangkat diatur "kurangi gerakan" (*prefers-reduced-motion*).
+- Suara bisa dimatikan atau dikecilkan di Pengaturan. Tidak ada musik latar.
+
+## Pemecahan masalah
+
+| Masalah | Solusi |
+|---|---|
+| "1 game gagal dimuat" setelah mengubah file di komputer sendiri | Muat ulang dengan Ctrl+F5 (file lama tertahan di cache browser). |
+| Versi lama terus muncul setelah deploy | Pastikan `VERSI_CACHE` di `sw.js` sudah dinaikkan, lalu tutup semua tab aplikasi dan buka lagi. |
+| Progres hilang | Data browser terhapus, atau memakai browser/perangkat lain. Impor berkas dari Ekspor Progres. |
+| Lupa PIN Mode Guru | Hapus key `tgb:teacher` lewat DevTools → Application → Local Storage; PIN kembali ke 1234. |
+| Tidak ada suara | Cek Pengaturan → Suara, volume perangkat, dan mode senyap. Sentuh layar sekali setelah membuka aplikasi. |
+
+## Ikon aplikasi
+
+`ikon.svg` adalah ikon utama. Ikon PNG (untuk pemasangan di Android/iOS) dibuat dari pixel art yang sama:
+
+```bash
+python alat/buat-ikon.py
+```
+
+Butuh Pillow (`pip install pillow`). Hanya perlu dijalankan jika ikon diubah.

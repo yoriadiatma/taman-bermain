@@ -138,8 +138,8 @@ button, input, select, textarea { font: inherit; color: inherit; }
 }
 
 .bintang { font-size: 1.2rem; letter-spacing: 2px; white-space: nowrap; }
-.bintang .isi { color: #e8a100; }
-.bintang .kosong { color: #b7bdc6; }
+.bintang .isi { color: #f5b300; -webkit-text-stroke: 1.5px #7a4f00; }
+.bintang .kosong { color: #e9ecef; -webkit-text-stroke: 1.5px #6c757d; }
 
 .avatar {
   display: inline-block;
@@ -240,6 +240,18 @@ button, input, select, textarea { font: inherit; color: inherit; }
   html { font-size: 112.5%; }
   .avatar.besar { width: 88px; height: 88px; }
 }
+
+/* Sentuhan: tanpa zoom ketuk-ganda pada tombol, tanpa seleksi teks saat ditekan lama. */
+button, [role="button"], a, summary { touch-action: manipulation; }
+.tombol { -webkit-user-select: none; user-select: none; }
+/* Cegah tarik-untuk-muat-ulang yang tidak sengaja saat bermain (Chrome Android). */
+html, body { overscroll-behavior-y: contain; }
+/* Ruang aman untuk layar berponi saat dipasang sebagai aplikasi. */
+body { padding: 0 env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left); }
+
+/* Pergantian layar yang lembut (hanya opasitas, agar posisi elemen tetap). */
+.layar, .layar-game { animation: layar-masuk 0.22s ease-out; }
+@keyframes layar-masuk { from { opacity: 0; } }
 
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; }

@@ -33,7 +33,7 @@ function siapkan() {
 /** Panggil dari event sentuhan/klik pertama agar suara bisa diputar. */
 export function buka() {
   const c = siapkan();
-  if (c && c.state === 'suspended') c.resume();
+  if (c && c.state !== 'running') c.resume().catch(() => {});
 }
 
 function nada(frek, mulai, durasi, { tipe = 'sine', vol = 0.25, keFrek = null } = {}) {
@@ -70,7 +70,8 @@ const SUARA = {
 export function main(nama) {
   if (!aktif() || !SUARA[nama]) return;
   if (!siapkan()) return;
-  if (ctx.state === 'suspended') ctx.resume();
+  // Safari iOS bisa berstatus 'interrupted' (mis. setelah telepon masuk), bukan hanya 'suspended'.
+  if (ctx.state !== 'running') ctx.resume().catch(() => {});
   master.gain.value = volume();
   SUARA[nama]();
 }

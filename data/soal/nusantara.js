@@ -165,10 +165,11 @@ export default [
   },
   {
     id: 'nus5-02', kelas: 5, topik: 'Rumah Adat', tipe: 'pilihan',
-    pertanyaan: 'Honai adalah rumah adat dari ...',
-    pilihan: ['Papua', 'Bali', 'Aceh', 'Jawa Barat'], jawaban: 'Papua',
+    pertanyaan: 'Honai adalah rumah adat dari provinsi ...',
+    pilihan: ['Papua Pegunungan', 'Bali', 'Aceh', 'Jawa Barat'], jawaban: 'Papua Pegunungan',
     petunjuk: 'Bentuknya bulat dengan atap jerami, cocok untuk daerah pegunungan yang dingin.',
-    penjelasan: 'Honai adalah rumah adat masyarakat pegunungan Papua.',
+    penjelasan: 'Honai adalah rumah adat masyarakat pegunungan Papua, yang sejak 2022 menjadi Provinsi Papua Pegunungan (ibu kota Wamena).',
+    cek: true, // TODO verifikasi: sebelum pemekaran 2022, jawabannya "Papua".
   },
   {
     id: 'nus5-03', kelas: 5, topik: 'Rumah Adat', tipe: 'pilihan',

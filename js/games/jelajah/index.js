@@ -8,18 +8,18 @@ import { buatMisi, hitungBintang, provinsiWilayah, JUMLAH_MISI } from './misi.js
 
 const ikon = pixelSvg([
   '............',
-  '..gg........',
-  '.gggg...yy..',
-  '.ggggg.yyyy.',
-  '..ggg...yy..',
-  '............',
-  '....pppp....',
-  '...pppppp...',
-  '.....pp..rr.',
-  '........rrr.',
-  '.........r..',
-  '............',
-], { g: '#2f9e44', y: '#f59f00', p: '#9c36b5', r: '#e03131' }, { latar: '#a5d8ff', pad: 1 });
+  '.gg..m......',
+  'gggg.mw.....',
+  '.....mww....',
+  '.....mwww...',
+  '.....mwwww..',
+  '.....m......',
+  'bbbbbbbbbbbb',
+  '.bbbbbbbbbb.',
+  '..bbbbbbbb..',
+  'ssssssssssss',
+  's.ss.ss.ss.s',
+], { g: '#2f9e44', m: '#6b4226', w: '#fff', b: '#c92a2a', s: '#1c7ed6' }, { latar: '#a5d8ff', pad: 1 });
 
 const NS = 'http://www.w3.org/2000/svg';
 const WILAYAH_ID = Object.keys(WILAYAH);

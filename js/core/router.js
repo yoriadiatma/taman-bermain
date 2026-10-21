@@ -58,7 +58,22 @@ function muat() {
     bersihkan = null;
   }
   window.scrollTo(0, 0);
-  bersihkan = m.tampil(m.param) || null;
+  try {
+    bersihkan = m.tampil(m.param) || null;
+  } catch (e) {
+    console.error(`Layar ${path} gagal ditampilkan:`, e);
+    const app = document.getElementById('app');
+    const tombol = document.createElement('button');
+    tombol.className = 'tombol utama';
+    tombol.type = 'button';
+    tombol.textContent = 'Kembali ke menu';
+    tombol.onclick = () => { location.hash = '/hub'; };
+    const panel = document.createElement('main');
+    panel.className = 'layar layar-sempit';
+    panel.innerHTML = '<h1 tabindex="-1">Maaf, halaman ini bermasalah.</h1><p>Coba kembali ke menu atau muat ulang halaman.</p>';
+    panel.append(tombol);
+    app.replaceChildren(panel);
+  }
   // Pindahkan fokus ke judul layar baru, kecuali layar itu sudah memfokuskan sesuatu (mis. isian jawaban).
   if (!document.activeElement || document.activeElement === document.body) {
     document.querySelector('h1')?.focus({ preventScroll: true });

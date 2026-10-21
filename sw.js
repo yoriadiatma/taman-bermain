@@ -2,9 +2,9 @@
 //
 // SETIAP ADA UPDATE: naikkan VERSI_CACHE (mis. 'tgb-v2'), dan tambahkan file
 // baru ke BERKAS. Saat versi naik, cache lama milik aplikasi ini dihapus.
-// Service worker tidak didaftarkan di localhost (lihat js/main.js).
+// Service worker tidak didaftarkan di localhost kecuali dengan ?sw di URL (lihat js/main.js).
 
-const VERSI_CACHE = 'tgb-v11';
+const VERSI_CACHE = 'tgb-v12';
 // Origin <username>.github.io dipakai bersama project lain: hanya sentuh cache berawalan ini.
 const AWALAN_CACHE = 'tgb-';
 
@@ -14,6 +14,10 @@ const BERKAS = [
   'index.html',
   'manifest.json',
   'ikon.svg',
+  'ikon-192.png',
+  'ikon-512.png',
+  'ikon-maskable-512.png',
+  'ikon-apple-180.png',
   'css/base.css',
   'css/blok.css',
   'css/catur.css',
@@ -44,6 +48,7 @@ const BERKAS = [
   'js/core/cadangan.js',
   'js/core/mapel.js',
   'js/core/profile.js',
+  'js/core/pwa.js',
   'js/core/quiz-ui.js',
   'js/core/quiz.js',
   'js/core/registry.js',
@@ -99,7 +104,10 @@ const BERKAS = [
 ];
 
 self.addEventListener('install', e => {
-  e.waitUntil(caches.open(VERSI_CACHE).then(c => c.addAll(BERKAS)).then(() => self.skipWaiting()));
+  // cache: 'reload' agar yang disimpan selalu versi terbaru dari server, bukan salinan lama di cache HTTP browser.
+  e.waitUntil(caches.open(VERSI_CACHE)
+    .then(c => c.addAll(BERKAS.map(u => new Request(u, { cache: 'reload' }))))
+    .then(() => self.skipWaiting()));
 });
 
 self.addEventListener('activate', e => {
@@ -116,8 +124,17 @@ self.addEventListener('fetch', e => {
   e.respondWith(caches.open(VERSI_CACHE).then(async cache => {
     const ada = await cache.match(req, { ignoreSearch: true });
     if (ada) return ada;
-    const res = await fetch(req);
-    if (res.ok) cache.put(req, res.clone());
-    return res;
+    try {
+      const res = await fetch(req);
+      if (res.ok) cache.put(req, res.clone());
+      return res;
+    } catch (galat) {
+      // Offline dan halaman belum ada di cache: tampilkan aplikasi utama.
+      if (req.mode === 'navigate') {
+        const utama = await cache.match('./');
+        if (utama) return utama;
+      }
+      throw galat;
+    }
   }));
 });

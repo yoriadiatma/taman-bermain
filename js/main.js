@@ -4,6 +4,7 @@ import * as storage from './core/storage.js';
 import * as profil from './core/profile.js';
 import * as router from './core/router.js';
 import * as audio from './core/audio.js';
+import * as pwa from './core/pwa.js';
 import { toast } from './core/ui.js';
 import { tampilModeGuru } from './core/teacher.js';
 import { muatSemuaGame } from './games/index.js';
@@ -24,10 +25,24 @@ storage.saatGalat(jenis => {
     : 'Progres gagal disimpan.', 'peringatan', 6000);
 });
 
+// Galat tak terduga: catat di konsol dan beri tahu dengan lembut (paling sering sekali per 30 detik).
+let galatTerakhir = 0;
+function laporGalat(e) {
+  console.error(e);
+  if (Date.now() - galatTerakhir < 30000) return;
+  galatTerakhir = Date.now();
+  toast('Ups, ada yang tidak beres. Jika layar macet, kembali ke menu atau muat ulang halaman.', 'peringatan', 6000);
+}
+window.addEventListener('error', e => laporGalat(e.error ?? e.message));
+window.addEventListener('unhandledrejection', e => laporGalat(e.reason));
+
 storage.migrasi();
 if (!storage.tersedia()) {
   toast('Penyimpanan browser tidak bisa dipakai (mungkin mode privat). Progres tidak akan tersimpan.', 'peringatan', 8000);
 }
+
+// Lebih awal, agar ajakan "pasang aplikasi" dari browser tidak terlewat.
+pwa.mulai();
 
 const gagal = await muatSemuaGame();
 if (gagal.length) toast(`${gagal.length} game gagal dimuat.`, 'peringatan', 5000);
@@ -62,9 +77,3 @@ document.addEventListener('click', e => {
 
 router.mulai('/');
 
-// Service worker hanya di situs yang sudah di-deploy, supaya saat pengembangan
-// di localhost file tidak tertahan di cache lama.
-const LOKAL = ['localhost', '127.0.0.1', '[::1]'];
-if ('serviceWorker' in navigator && !LOKAL.includes(location.hostname)) {
-  navigator.serviceWorker.register('sw.js').catch(e => console.warn('Service worker gagal didaftarkan:', e));
-}
