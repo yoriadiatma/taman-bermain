@@ -63,6 +63,8 @@ export class Dunia {
     this.tile = new Uint8Array(LEBAR * TINGGI);
     this.permukaan = new Int16Array(LEBAR); // baris blok penahan cahaya teratas tiap kolom
     this._buat();
+    this.asli = this.tile.slice(); // dunia asli dari seed, untuk menghitung diff
+    this.perubahan = new Map();    // indeks tile -> id blok baru
   }
 
   dalam(x, y) {
@@ -77,8 +79,35 @@ export class Dunia {
 
   set(x, y, id) {
     if (!this.dalam(x, y)) return;
-    this.tile[y * LEBAR + x] = id;
+    const i = y * LEBAR + x;
+    this.tile[i] = id;
+    if (id === this.asli[i]) this.perubahan.delete(i);
+    else this.perubahan.set(i, id);
     this._hitungPermukaan(x);
+  }
+
+  /** Diff ringkas untuk disimpan: [indeks, id, indeks, id, ...]. */
+  dataPerubahan() {
+    const d = [];
+    for (const [i, id] of this.perubahan) d.push(i, id);
+    return d;
+  }
+
+  /** Terapkan diff hasil dataPerubahan(). Data yang rusak dilewati. */
+  terapkanPerubahan(d) {
+    if (!Array.isArray(d)) return;
+    for (let k = 0; k + 1 < d.length; k += 2) {
+      const i = d[k];
+      const id = d[k + 1];
+      if (!Number.isInteger(i) || i < 0 || i >= this.tile.length || !Number.isInteger(id) || id < 0 || id > 255) continue;
+      this.set(i % LEBAR, Math.floor(i / LEBAR), id);
+    }
+  }
+
+  /** Cari blok tertentu dalam jarak r dari (x, y). */
+  adaDekat(x, y, id, r = 4) {
+    for (let dy = -r; dy <= r; dy++) for (let dx = -r; dx <= r; dx++) if (this.get(x + dx, y + dy) === id) return true;
+    return false;
   }
 
   padat(x, y) {
@@ -164,7 +193,21 @@ export class Dunia {
       }
     }
 
-    // 5. Dinding batuan dasar di kedua tepi dunia.
+    // 5. Peti harta terkunci di lantai gua, saling berjauhan.
+    let petiTerakhir = -30;
+    for (let x = 6; x < LEBAR - 6; x++) {
+      if (x - petiTerakhir < 22 || hash(x, 4, s) > 0.25) continue;
+      for (let y = tanah[x] + 10; y < TINGGI - 4; y++) {
+        const i = y * LEBAR + x;
+        if (t[i] === B.UDARA && t[i - LEBAR] === B.UDARA && t[i + LEBAR] === B.BATU) {
+          isi(x, y, B.PETI);
+          petiTerakhir = x;
+          break;
+        }
+      }
+    }
+
+    // 6. Dinding batuan dasar di kedua tepi dunia.
     for (let y = 0; y < TINGGI; y++) {
       isi(0, y, B.BATUAN_DASAR);
       isi(LEBAR - 1, y, B.BATUAN_DASAR);

@@ -4,7 +4,7 @@ Kumpulan game edukasi untuk anak SD kelas 4–6 (Kurikulum Merdeka), dengan muat
 Aplikasi web statis: HTML, CSS, dan JavaScript vanilla (ES modules), tanpa server, tanpa build tool,
 dan tanpa dependensi luar. Progres disimpan di `localStorage` browser masing-masing perangkat.
 
-> Status: **Tahap 5 (Blok Petualang: dunia & gerak)**. Game: Catur, Blok Petualang, dan game uji "Tebak Angka". README ini dilengkapi di Tahap 12.
+> Status: **Tahap 6 (Blok Petualang lengkap)**. Game: Catur, Blok Petualang, dan game uji "Tebak Angka". README ini dilengkapi di Tahap 12.
 
 ## Menjalankan di komputer sendiri
 
@@ -66,7 +66,7 @@ Jika format data berubah, naikkan `SCHEMA` di `js/core/storage.js` dan tambahkan
 Buka <http://localhost:8000/test.html> untuk menjalankan semua uji otomatis:
 
 - Catur: aturan (rokade, en passant, promosi, skakmat, remis, perft), kebenaran semua puzzle, pelajaran Belajar Bidak, dan komputer (termasuk Web Worker).
-- Blok Petualang: dunia dari seed (sama persis untuk seed yang sama), titik muncul, sebaran bijih, dan fisika pemain.
+- Blok Petualang: dunia dari seed, diff simpanan, fisika pemain, tas, resep (soal hitungannya selalu benar), menambang, menaruh, rumah, misi, dan peti.
 
 File uji tiap game ada di `js/games/<id>/uji.js` dan didaftarkan di `uji/index.js`. Semua uji harus berwarna hijau. Halaman ini tidak tampil di menu aplikasi.
 
@@ -80,7 +80,16 @@ File uji tiap game ada di `js/games/<id>/uji.js` dan didaftarkan di `uji/index.j
 ## Blok Petualang
 
 - Dunia 384 × 128 blok dibuat dari sebuah seed (`js/games/blok/dunia.js`); setiap profil punya seed sendiri.
-- Kontrol: ← → / A D untuk jalan, ↑ / W / Spasi untuk lompat; tombol ◀ ▶ ▲ muncul di layar sentuh.
+  Yang disimpan hanya seed + daftar blok yang berubah (diff), isi tas, posisi, XP, dan misi.
+- Kontrol: ← → / A D untuk jalan, ↑ / W / Spasi untuk lompat, tahan klik untuk menambang, klik kanan untuk menaruh,
+  angka 1–9 untuk hotbar, E untuk tas. Di layar sentuh ada tombol ◀ ▶ ▲ dan tombol mode ⛏ Tambang / 🧱 Taruh.
+- Belajar di dalam permainan:
+  - **Membuat barang** (`resep.js`): sebelum barang jadi, anak menjawab soal perkalian/pembagian tentang bahannya.
+  - **Peti terkunci** di dalam gua dibuka dengan soal dari bank soal (semua mapel, sesuai kelas).
+  - **Misi** (`misi.js`): misi IPA (tumbuhan, air, cahaya, logam) diakhiri soal dari bank soal; misi bangun memakai soal
+    luas dan keliling, lalu bangunannya diperiksa otomatis.
+  - **Buku Barang**: menyusun huruf acak menjadi nama barang (ejaan).
+- Hasil soal tercatat di statistik Mode Guru.
 - Tambahkan `?debug` di URL (mis. `http://localhost:8000/?debug#/main/blok`) untuk menampilkan FPS.
 
 ## Mode Guru

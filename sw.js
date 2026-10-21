@@ -4,7 +4,7 @@
 // baru ke BERKAS. Saat versi naik, cache lama milik aplikasi ini dihapus.
 // Service worker tidak didaftarkan di localhost (lihat js/main.js).
 
-const VERSI_CACHE = 'tgb-v5';
+const VERSI_CACHE = 'tgb-v6';
 // Origin <username>.github.io dipakai bersama project lain: hanya sentuh cache berawalan ini.
 const AWALAN_CACHE = 'tgb-';
 
@@ -42,12 +42,18 @@ const BERKAS = [
   'js/core/teacher.js',
   'js/core/ui.js',
   'js/games/index.js',
+  'js/games/blok/aksi.js',
+  'js/games/blok/barang.js',
   'js/games/blok/blok.js',
   'js/games/blok/dunia.js',
   'js/games/blok/index.js',
+  'js/games/blok/inventori.js',
   'js/games/blok/kontrol.js',
+  'js/games/blok/misi.js',
+  'js/games/blok/panel.js',
   'js/games/blok/pemain.js',
   'js/games/blok/render.js',
+  'js/games/blok/resep.js',
   'js/games/blok/tekstur.js',
   'js/games/catur/ai-worker.js',
   'js/games/catur/ai.js',

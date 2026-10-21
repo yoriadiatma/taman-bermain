@@ -1,6 +1,6 @@
 // render.js — menggambar dunia ke canvas. Hanya tile yang terlihat di layar yang digambar.
 
-import { B } from './blok.js';
+import { B, BLOK, padat } from './blok.js';
 import { LEBAR, TINGGI } from './dunia.js';
 import { buatAtlas, buatSprite, UKURAN, LATAR_GUA, SPRITE_LEBAR, SPRITE_TINGGI } from './tekstur.js';
 
@@ -55,7 +55,10 @@ export class Penggambar {
     return { x: kamera.x + (xCss * dpr) / this.tile, y: kamera.y + (yCss * dpr) / this.tile };
   }
 
-  gambar({ dunia, pemain, kamera, waktu, sorot = null }) {
+  /**
+   * sorot: { x, y, jangkau } kotak yang ditunjuk; retak: { x, y, progres 0..1 } blok yang sedang ditambang.
+   */
+  gambar({ dunia, pemain, kamera, waktu, sorot = null, retak = null }) {
     const { ctx, tile: T, kanvas } = this;
     const W = kanvas.width;
     const H = kanvas.height;
@@ -80,23 +83,60 @@ export class Penggambar {
     const atlas = this.atlas;
     const air = [];
 
-    // Blok padat, dinding gua, dan bayangan bawah tanah
+    // Obor di sekitar layar menerangi bawah tanah.
+    const obor = [];
+    const R = 6;
+    for (let y = Math.max(0, y0 - R); y <= Math.min(TINGGI - 1, y1 + R); y++) {
+      for (let x = Math.max(0, x0 - R); x <= Math.min(LEBAR - 1, x1 + R); x++) {
+        if (dunia.tile[y * LEBAR + x] === B.OBOR) obor.push(x, y);
+      }
+    }
+    const tingkatGelap = (x, y, dalam) => {
+      let g = Math.min(10, (dalam + 1) >> 1);
+      for (let i = 0; i < obor.length && g > 0; i += 2) {
+        const d = Math.hypot(obor[i] - x, obor[i + 1] - y);
+        if (d < R) g = Math.min(g, Math.floor((g * d) / R));
+      }
+      return g;
+    };
+
+    // Blok, dinding gua, dan bayangan bawah tanah
     for (let y = y0; y <= y1; y++) {
       for (let x = x0; x <= x1; x++) {
         const id = dunia.tile[y * LEBAR + x];
         const dalam = y - dunia.permukaan[x];
         if (id === B.AIR) { air.push(x, y); continue; }
-        if (id === B.UDARA) {
-          if (dalam <= 0) continue; // langit
+        // Di bawah tanah, blok yang tidak penuh (udara, obor, pintu, kaca) berlatar dinding gua.
+        if (dalam > 0 && (id === B.UDARA || !padat(id) || BLOK[id].tembusCahaya)) {
           ctx.drawImage(atlas, LATAR_GUA * UKURAN, 0, UKURAN, UKURAN, px(x), py(y), T, T);
-        } else {
-          ctx.drawImage(atlas, id * UKURAN, 0, UKURAN, UKURAN, px(x), py(y), T, T);
         }
-        if (dalam > 1) {
-          ctx.fillStyle = GELAP[Math.min(10, (dalam + 1) >> 1)];
-          ctx.fillRect(px(x), py(y), T, T);
+        if (id !== B.UDARA) ctx.drawImage(atlas, id * UKURAN, 0, UKURAN, UKURAN, px(x), py(y), T, T);
+        if (id === B.UDARA && dalam <= 0) continue; // langit
+        if (dalam > 1 && id !== B.OBOR) {
+          const g = tingkatGelap(x, y, dalam);
+          if (g > 0) {
+            ctx.fillStyle = GELAP[g];
+            ctx.fillRect(px(x), py(y), T, T);
+          }
         }
       }
+    }
+
+    // Retakan pada blok yang sedang ditambang
+    if (retak && retak.progres > 0) {
+      ctx.strokeStyle = 'rgba(0, 0, 0, 0.75)';
+      ctx.lineWidth = Math.max(2, T / 12);
+      const n = 1 + Math.floor(retak.progres * 4);
+      const ox = px(retak.x);
+      const oy = py(retak.y);
+      ctx.beginPath();
+      const garis = [[0.5, 0.5, 0.15, 0.2], [0.5, 0.5, 0.85, 0.3], [0.5, 0.5, 0.3, 0.9], [0.5, 0.5, 0.8, 0.85]];
+      for (let i = 0; i < n; i++) {
+        const [a, b, c, d] = garis[i];
+        ctx.moveTo(ox + a * T, oy + b * T);
+        ctx.lineTo(ox + c * T, oy + d * T);
+      }
+      ctx.stroke();
     }
 
     // Pemain
@@ -116,9 +156,9 @@ export class Penggambar {
       ctx.drawImage(atlas, B.AIR * UKURAN, atasAir ? 0 : 1, UKURAN, atasAir ? UKURAN : UKURAN - 1, px(x), py(y), T, T);
     }
 
-    // Kotak yang sedang ditunjuk (dipakai saat menambang di tahap berikutnya)
+    // Kotak yang sedang ditunjuk: putih jika terjangkau, merah jika terlalu jauh
     if (sorot) {
-      ctx.strokeStyle = 'rgba(255, 255, 255, 0.9)';
+      ctx.strokeStyle = sorot.jangkau ? 'rgba(255, 255, 255, 0.95)' : 'rgba(255, 90, 90, 0.8)';
       ctx.lineWidth = Math.max(2, T / 16);
       ctx.strokeRect(px(sorot.x) + 1, py(sorot.y) + 1, T - 2, T - 2);
     }

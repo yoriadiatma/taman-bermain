@@ -34,20 +34,9 @@
   font-weight: 700;
 }
 
-.blok-tombol-atas { position: absolute; top: 10px; right: 10px; display: flex; gap: 8px; }
+.blok-tombol-atas { position: absolute; top: 10px; right: 10px; display: flex; flex-wrap: wrap; justify-content: flex-end; gap: 6px; max-width: 60%; }
 .blok-tombol-atas .tombol { box-shadow: none; }
 
-.blok-bantuan {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  width: min(92%, 460px);
-  max-height: 90%;
-  overflow: auto;
-  transform: translate(-50%, -50%);
-  margin: 0;
-}
-.blok-bantuan ul { padding-left: 1.2em; }
 
 /* Tombol sentuh: tampil jika perangkat punya layar sentuh (termasuk laptop layar sentuh). */
 .blok-kontrol-sentuh { display: none; }
@@ -78,7 +67,129 @@
 .blok-sentuh:active { background: rgba(28, 111, 209, 0.7); }
 
 @media (max-width: 560px) {
-  .blok-hud { top: 58px; }
+  .blok-tombol-atas { left: 10px; max-width: none; }
+  .blok-hud { top: 64px; }
   .blok-hud span { font-size: 0.7rem; }
+  .blok-hud span:nth-child(n + 3) { display: none; } /* di layar kecil hanya waktu dan level */
   .blok-sentuh { width: 64px; height: 64px; }
+}
+
+/* Pesan singkat di tengah atas */
+.blok-pesan {
+  position: absolute;
+  left: 50%;
+  bottom: 86px;
+  transform: translateX(-50%);
+  max-width: 90%;
+  margin: 0;
+  padding: 6px 14px;
+  border-radius: 12px;
+  background: rgba(20, 24, 33, 0.8);
+  color: #fff;
+  font-weight: 700;
+  font-size: 0.85rem;
+  text-align: center;
+  pointer-events: none;
+}
+.blok-pesan:empty { display: none; }
+
+/* Hotbar */
+.blok-hotbar {
+  position: absolute;
+  left: 50%;
+  bottom: 10px;
+  transform: translateX(-50%);
+  display: flex;
+  gap: 4px;
+  padding: 4px;
+  border-radius: 12px;
+  background: rgba(20, 24, 33, 0.6);
+}
+.blok-kotak {
+  position: relative;
+  width: 52px;
+  height: 52px;
+  padding: 0;
+  border: 3px solid rgba(255, 255, 255, 0.35);
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.15);
+  cursor: pointer;
+  touch-action: manipulation;
+}
+.blok-kotak.dipilih { border-color: #ffd43b; background: rgba(255, 212, 59, 0.3); }
+.blok-ikon { width: 70%; height: 70%; image-rendering: pixelated; pointer-events: none; }
+.blok-jumlah, .blok-nomor {
+  position: absolute;
+  font-size: 0.65rem;
+  font-weight: 800;
+  color: #fff;
+  text-shadow: 0 1px 2px #000, 0 0 2px #000;
+  pointer-events: none;
+}
+.blok-jumlah { right: 3px; bottom: 1px; }
+.blok-nomor { left: 3px; top: 1px; opacity: 0.8; }
+
+.blok-mode[aria-pressed="true"] { background: #ffd43b; color: var(--teks); }
+
+/* Panel di atas permainan */
+.blok-panel {
+  position: absolute;
+  top: 54px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: min(94%, 620px);
+  max-height: calc(100% - 140px);
+  overflow: auto;
+  margin: 0;
+  padding: 14px 16px;
+}
+.blok-panel ul { padding-left: 1.2em; font-size: 0.9rem; }
+.blok-panel-kepala { display: flex; justify-content: space-between; align-items: center; gap: 12px; margin-bottom: 6px; }
+.blok-panel-kepala h2 { margin: 0; font-size: 1.15rem; }
+
+.blok-grid-tas { display: grid; grid-template-columns: repeat(9, minmax(0, 1fr)); gap: 4px; }
+.blok-grid-tas .blok-kotak { width: auto; aspect-ratio: 1; height: auto; background: #495057; }
+.blok-grid-tas .blok-kotak.hotbar { background: #364fc7; }
+.blok-grid-tas .blok-kotak.dipilih { background: #f08c00; }
+
+.blok-daftar-resep, .blok-daftar-misi { display: grid; gap: 8px; }
+.blok-resep, .blok-misi {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px 12px;
+  padding: 8px 10px;
+  border: 2px solid #d5d9e0;
+  border-radius: 12px;
+  font-size: 0.85rem;
+}
+.blok-resep.tidak-bisa { opacity: 0.7; }
+.blok-resep-hasil { display: flex; align-items: center; gap: 6px; min-width: 150px; }
+.blok-resep-hasil .blok-ikon, .blok-bahan .blok-ikon, .blok-buku .blok-ikon { width: 28px; height: 28px; }
+.blok-resep-bahan { display: flex; flex-direction: column; gap: 2px; flex: 1; min-width: 180px; }
+.blok-bahan { display: flex; align-items: center; gap: 4px; }
+.blok-bahan.kurang, .blok-stasiun.kurang { color: var(--bahaya); font-weight: 700; }
+.blok-stasiun { color: var(--sukses); font-weight: 700; }
+.blok-resep-aksi { display: flex; align-items: center; gap: 6px; }
+.blok-resep-aksi .tombol { --tinggi-tombol: 40px; min-width: 40px; padding: 4px 10px; }
+.blok-kali { min-width: 1.6em; text-align: center; font-weight: 800; }
+.blok-misi p { margin: 2px 0; }
+.blok-misi.selesai { background: #d3f9d8; }
+.blok-misi.siap { background: #fff3bf; }
+.blok-misi-selesai { color: var(--sukses); font-weight: 800; }
+
+.blok-grid-buku { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 8px; }
+.blok-buku { display: flex; align-items: center; gap: 8px; padding: 6px 8px; border: 2px solid #d5d9e0; border-radius: 10px; font-weight: 700; font-size: 0.85rem; }
+.blok-buku.sudah { background: #d3f9d8; }
+.blok-buku .tombol { margin-left: auto; --tinggi-tombol: 36px; padding: 2px 10px; }
+
+@media (any-pointer: coarse) {
+  .blok-hotbar { bottom: 92px; }
+  .blok-pesan { bottom: 160px; }
+}
+@media (max-width: 600px) {
+  .blok-kotak { width: 34px; height: 34px; border-width: 2px; }
+  .blok-panel { top: 110px; max-height: calc(100% - 220px); }
+  .blok-tombol-atas .tombol { --tinggi-tombol: 40px; min-width: 40px; padding: 2px 8px; }
 }
