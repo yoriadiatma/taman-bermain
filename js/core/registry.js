@@ -10,7 +10,7 @@
 //   simpan(),                   // dipanggil saat auto-save dan sebelum keluar
 //   progres(store, profil),     // -> { bintang: 0-3, teks } untuk kartu di menu
 // }
-// ctx = { profil, kelas, store, audio, ui, keluar() }
+// ctx = { profil, kelas, store, audio, ui, quiz: { tanya, pilih, periksa, catat }, keluar() }
 
 import { MAPEL } from './mapel.js';
 

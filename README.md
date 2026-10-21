@@ -4,7 +4,7 @@ Kumpulan game edukasi untuk anak SD kelas 4–6 (Kurikulum Merdeka), dengan muat
 Aplikasi web statis: HTML, CSS, dan JavaScript vanilla (ES modules), tanpa server, tanpa build tool,
 dan tanpa dependensi luar. Progres disimpan di `localStorage` browser masing-masing perangkat.
 
-> Status: **Tahap 1 (fondasi)**. Baru ada game uji "Tebak Angka". README ini dilengkapi di Tahap 12.
+> Status: **Tahap 2 (mesin soal + bank soal)**. Baru ada game uji "Tebak Angka". README ini dilengkapi di Tahap 12.
 
 ## Menjalankan di komputer sendiri
 
@@ -39,9 +39,9 @@ Jalankan server di laptop, lalu dari tablet buka `http://<IP-laptop>:8000/`.
 ```
 index.html, manifest.json, sw.js, ikon.svg, .nojekyll
 css/            base.css, hub.css, satu css per game
-data/           data bersama (avatar, ungkapan; bank soal mulai Tahap 2)
+data/           bank soal (questions.js + soal/), avatar, ungkapan
 js/main.js      titik masuk
-js/core/        storage, profile, router, registry, ui, audio, teacher, mapel, cadangan
+js/core/        storage, profile, router, registry, ui, audio, quiz, quiz-ui, teacher, mapel, cadangan
 js/screens/     layar profil, hub, permainan, pengaturan
 js/games/<id>/  satu folder per game; daftar di js/games/index.js
 ```
@@ -57,6 +57,7 @@ Semua key berawalan `tgb:` (origin github.io dipakai bersama project lain):
 | `tgb:settings` | pengaturan suara |
 | `tgb:teacher` | hash PIN Mode Guru |
 | `tgb:p:<idProfil>:g:<idGame>:<key>` | progres game per profil |
+| `tgb:p:<idProfil>:quiz` | statistik soal per profil |
 
 Jika format data berubah, naikkan `SCHEMA` di `js/core/storage.js` dan tambahkan fungsi di `MIGRASI`.
 
@@ -64,6 +65,51 @@ Jika format data berubah, naikkan `SCHEMA` di `js/core/storage.js` dan tambahkan
 
 PIN bawaan: **1234** (segera ganti di Mode Guru → Keamanan). PIN hanya pengaman ringan agar
 anak tidak menghapus data tanpa sengaja; kode aplikasi bersifat publik.
+
+## Bank soal
+
+Soal ada di `data/soal/` (satu file per mapel: `matematika.js`, `bahasa.js`, `ipa.js`, `nusantara.js`, `pai.js`),
+digabung oleh `data/questions.js`. Saat ini ada 320 soal untuk kelas 4–6.
+
+### Menambah soal
+
+Salin satu soal yang sudah ada di file mapel yang sesuai, lalu ubah isinya:
+
+```js
+{
+  id: 'mtk4-23',            // harus unik; lanjutkan nomor terakhir
+  kelas: 4,
+  topik: 'Pecahan',
+  tipe: 'pilihan',          // 'pilihan' | 'angka' | 'teks' | 'urutan'
+  pertanyaan: '1/3 + 1/3 = ...',
+  pilihan: ['2/3', '2/6', '1/9'],
+  jawaban: '2/3',
+  petunjuk: 'Penyebutnya sudah sama, jumlahkan pembilangnya.',
+  penjelasan: '1/3 + 1/3 = 2/3.',
+},
+```
+
+- `angka`: `jawaban` berupa number (`3.75`); anak boleh mengetik `3,75`, `1.500`, atau `-3`.
+- `teks`: `jawaban` berupa string atau daftar jawaban yang diterima (`['rendah', 'pendek']`).
+  Huruf besar/kecil dan titik di akhir diabaikan.
+- `urutan`: `jawaban` berupa daftar item dalam urutan yang benar; item diacak saat ditampilkan.
+- `cek: true` menandai soal yang perlu diverifikasi guru. Semua soal PAI dan sebagian soal sejarah
+  ditandai begitu. Hapus tanda ini setelah soal dicek.
+
+Soal yang formatnya salah tidak dipakai dan didaftar di **Mode Guru → Lihat & coba soal**.
+Di halaman itu guru juga bisa menyaring soal yang perlu dicek dan mencoba soal tanpa memengaruhi statistik.
+Setelah menambah file soal baru, daftarkan juga di `sw.js`.
+
+### Memakai soal di game
+
+```js
+const hasil = await ctx.quiz.tanya({ mapel: 'matematika', topik: 'Pecahan' });
+if (hasil.benar) { /* beri bonus */ }
+```
+
+Opsi lain: `maksPercobaan` (bawaan 3), `judul`. Mesin soal memilih soal sesuai kelas profil, menghindari soal
+yang baru keluar, dan lebih sering memilih topik yang sering salah. Statistik (dihitung dari percobaan pertama)
+tampil di Mode Guru dan bisa diekspor ke CSV/JSON.
 
 ## Menambah game baru
 

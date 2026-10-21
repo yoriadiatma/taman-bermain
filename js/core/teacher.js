@@ -4,13 +4,14 @@
 // ini publik dan data ada di localStorage, jadi siapa pun yang paham bisa
 // melewatinya. Hash di bawah bukan hash kriptografis; dipilih karena jalan di
 // semua kondisi (termasuk saat dibuka lewat http://<IP-laptop> dari tablet).
-//
-// Statistik belajar per topik dan ekspor CSV ditambahkan bersama mesin soal (Tahap 2).
 
-import { el, avatarSvg, kepalaAplikasi, papanAngka, konfirmasi, modal, toast } from './ui.js';
+import { el, avatarSvg, kepalaAplikasi, papanAngka, konfirmasi, modal, toast, unduh, tanggalHariIni } from './ui.js';
 import * as storage from './storage.js';
 import * as profil from './profile.js';
 import * as audio from './audio.js';
+import * as quiz from './quiz.js';
+import { tanya } from './quiz-ui.js';
+import { MAPEL } from './mapel.js';
 import { ke } from './router.js';
 import { eksporProgres } from './cadangan.js';
 
@@ -126,7 +127,13 @@ function tampilDasbor(app) {
       barisProfil),
     el('section', { class: 'panel' },
       el('h2', {}, 'Statistik Belajar'),
-      el('p', {}, 'Statistik per mapel dan topik akan muncul di sini setelah mesin soal dipasang.')),
+      el('p', { class: 'catatan' }, 'Soal dihitung benar jika dijawab benar pada percobaan pertama. Topik di bawah 60% ditandai perlu latihan (⚠).'),
+      daftar.length ? daftar.map(bagianStatistik) : el('p', {}, 'Belum ada profil.'),
+      el('div', { class: 'baris-tombol' },
+        el('button', { class: 'tombol kedua', type: 'button', onclick: eksporCsv }, 'Ekspor statistik (CSV)'),
+        el('button', { class: 'tombol kedua', type: 'button', onclick: eksporStatJson }, 'Ekspor statistik (JSON)')),
+      el('p', { class: 'catatan' }, 'Berkas CSV memakai pemisah titik koma (;) agar langsung terbaca di Excel berbahasa Indonesia.')),
+    bagianBankSoal(app),
     el('section', { class: 'panel' },
       el('h2', {}, 'Data'),
       el('p', {}, 'Ekspor menyimpan semua profil dan progres ke satu berkas JSON.'),
@@ -172,4 +179,170 @@ async function dialogGantiPin(app) {
     toast('PIN sudah diganti.', 'sukses');
     tampilDasbor(app);
   }
+}
+
+// ---------- Statistik belajar ----------
+
+const persen = (b, s) => (b + s ? Math.round((b / (b + s)) * 100) : 0);
+const namaMapel = id => MAPEL[id]?.nama ?? id;
+
+function tabel(kepala, baris) {
+  return el('div', { class: 'tabel-gulir' }, el('table', { class: 'tabel' },
+    el('thead', {}, el('tr', {}, kepala.map(k => el('th', { scope: 'col' }, k)))),
+    el('tbody', {}, baris)));
+}
+
+/** Semua topik yang pernah dikerjakan: [{ mapel, topik, benar, salah }], yang paling lemah di atas. */
+function daftarTopik(st) {
+  const hasil = [];
+  for (const [mapel, m] of Object.entries(st.mapel)) {
+    for (const [topik, t] of Object.entries(m.topik)) hasil.push({ mapel, topik, benar: t.benar, salah: t.salah });
+  }
+  return hasil.sort((a, b) => persen(a.benar, a.salah) - persen(b.benar, b.salah) || (b.benar + b.salah) - (a.benar + a.salah));
+}
+
+function bagianStatistik(p) {
+  const st = quiz.statistik(p.id);
+  const mapel = Object.entries(st.mapel);
+  const benar = mapel.reduce((n, [, m]) => n + m.benar, 0);
+  const salah = mapel.reduce((n, [, m]) => n + m.salah, 0);
+  if (!mapel.length) {
+    return el('details', { class: 'stat-profil' }, el('summary', {}, `${p.nama} (kelas ${p.kelas}) — belum mengerjakan soal`));
+  }
+  const sulit = Object.entries(st.soal)
+    .filter(([, v]) => v.s > 0)
+    .sort((a, b) => b[1].s - a[1].s)
+    .slice(0, 5)
+    .map(([id, v]) => ({ soal: quiz.ambilSoal(id), ...v }))
+    .filter(x => x.soal);
+
+  return el('details', { class: 'stat-profil' },
+    el('summary', {}, `${p.nama} (kelas ${p.kelas}) — ${benar + salah} soal, ${persen(benar, salah)}% benar`),
+    el('h3', {}, 'Per mata pelajaran'),
+    tabel(['Mapel', 'Benar', 'Salah', '% benar'], mapel.map(([id, m]) => el('tr', {},
+      el('td', {}, namaMapel(id)), el('td', {}, m.benar), el('td', {}, m.salah), el('td', {}, `${persen(m.benar, m.salah)}%`)))),
+    el('h3', {}, 'Per topik (yang paling perlu latihan di atas)'),
+    tabel(['Mapel', 'Topik', 'Benar', 'Salah', '% benar'], daftarTopik(st).map(t => {
+      const pr = persen(t.benar, t.salah);
+      return el('tr', { class: pr < 60 ? 'perlu-latihan' : null },
+        el('td', {}, namaMapel(t.mapel)), el('td', {}, t.topik), el('td', {}, t.benar), el('td', {}, t.salah),
+        el('td', {}, `${pr}%`, pr < 60 ? ' ⚠' : ''));
+    })),
+    sulit.length > 0 && el('h3', {}, 'Soal yang paling sering salah'),
+    sulit.length > 0 && el('ol', { class: 'soal-sulit' }, sulit.map(x => el('li', {},
+      x.soal.pertanyaan, ' ', el('span', { class: 'catatan' }, `(salah ${x.s}×, benar ${x.b}×)`)))),
+    st.terakhir && el('p', { class: 'catatan' }, `Terakhir mengerjakan soal: ${new Date(st.terakhir).toLocaleString('id-ID')}`));
+}
+
+// Cegah sel CSV dibaca sebagai rumus oleh Excel.
+function selCsv(v) {
+  let s = String(v ?? '');
+  if (/^[=+\-@]/.test(s)) s = "'" + s;
+  return /[;"\r\n]/.test(s) ? `"${s.replace(/"/g, '""')}"` : s;
+}
+
+function eksporCsv() {
+  const baris = [['Profil', 'Kelas', 'Mapel', 'Topik', 'Benar', 'Salah', 'Persen benar']];
+  for (const p of profil.semua()) {
+    for (const t of daftarTopik(quiz.statistik(p.id))) {
+      baris.push([p.nama, p.kelas, namaMapel(t.mapel), t.topik, t.benar, t.salah, persen(t.benar, t.salah)]);
+    }
+  }
+  if (baris.length === 1) {
+    toast('Belum ada statistik untuk diekspor.', 'peringatan');
+    return;
+  }
+  const isi = '﻿' + baris.map(b => b.map(selCsv).join(';')).join('\r\n');
+  unduh(`statistik-belajar-${tanggalHariIni()}.csv`, isi, 'text/csv;charset=utf-8');
+}
+
+function eksporStatJson() {
+  const data = profil.semua().map(p => ({ profil: p.nama, kelas: p.kelas, statistik: quiz.statistik(p.id) }));
+  unduh(`statistik-belajar-${tanggalHariIni()}.json`,
+    JSON.stringify({ app: 'tgb', jenis: 'statistik', diekspor: new Date().toISOString(), data }, null, 1));
+}
+
+// ---------- Bank soal ----------
+
+const KELAS_BANK = [4, 5, 6];
+
+function bagianBankSoal(app) {
+  const semua = quiz.semuaSoal();
+  const hitung = (m, k) => semua.filter(s => s.mapel === m && s.kelas === k).length;
+  const perluCek = semua.filter(s => s.cek).length;
+  const masalah = quiz.masalahBank();
+  return el('section', { class: 'panel' },
+    el('h2', {}, 'Bank Soal'),
+    tabel(['Mapel', ...KELAS_BANK.map(k => `Kelas ${k}`), 'Perlu dicek'], Object.keys(MAPEL).map(m => el('tr', {},
+      el('td', {}, namaMapel(m)),
+      KELAS_BANK.map(k => el('td', {}, hitung(m, k))),
+      el('td', {}, semua.filter(s => s.mapel === m && s.cek).length)))),
+    el('p', {}, `Total ${semua.length} soal. ${perluCek} soal ditandai perlu dicek kebenarannya oleh guru.`),
+    masalah.length > 0 && el('p', { class: 'galat' }, `${masalah.length} soal tidak dipakai karena formatnya salah. Lihat daftarnya di halaman bank soal.`),
+    el('button', { class: 'tombol utama', type: 'button', onclick: () => tampilBankSoal(app) }, 'Lihat & coba soal'),
+    el('p', { class: 'catatan' }, 'Soal ada di folder data/soal/. Cara menambah soal dijelaskan di README.'));
+}
+
+function tampilBankSoal(app) {
+  const filter = { mapel: '', kelas: '', hanyaCek: false };
+  const wadah = el('div', { class: 'daftar-bank' });
+  const info = el('p', { 'aria-live': 'polite' });
+
+  const pilihMapel = el('select', { id: 'f-mapel', class: 'masukan' },
+    el('option', { value: '' }, 'Semua mapel'),
+    Object.entries(MAPEL).map(([id, m]) => el('option', { value: id }, m.nama)));
+  const pilihKelas = el('select', { id: 'f-kelas', class: 'masukan' },
+    el('option', { value: '' }, 'Semua kelas'),
+    KELAS_BANK.map(k => el('option', { value: String(k) }, `Kelas ${k}`)));
+  const centangCek = el('input', { id: 'f-cek', type: 'checkbox' });
+  pilihMapel.addEventListener('change', () => { filter.mapel = pilihMapel.value; gambar(); });
+  pilihKelas.addEventListener('change', () => { filter.kelas = pilihKelas.value; gambar(); });
+  centangCek.addEventListener('change', () => { filter.hanyaCek = centangCek.checked; gambar(); });
+
+  function kartu(s) {
+    const jawabanLain = s.tipe === 'teks' ? [].concat(s.jawaban).slice(1) : [];
+    return el('article', { class: 'soal-pratinjau' },
+      el('div', { class: 'baris-chip' },
+        el('span', { class: 'chip', style: { background: MAPEL[s.mapel].warna } }, namaMapel(s.mapel)),
+        el('span', { class: 'chip chip-abu' }, `Kelas ${s.kelas}`),
+        el('span', { class: 'chip chip-abu' }, s.topik),
+        el('span', { class: 'chip chip-abu' }, s.tipe),
+        s.cek && el('span', { class: 'chip chip-kelas' }, 'Perlu dicek'),
+        el('code', { class: 'id-soal' }, s.id)),
+      el('p', { class: 'pratinjau-tanya' }, s.pertanyaan),
+      s.tipe === 'pilihan' && el('ul', { class: 'pratinjau-pilihan' },
+        s.pilihan.map(x => el('li', { class: x === s.jawaban ? 'benar' : null }, x))),
+      el('p', {}, el('strong', {}, 'Jawaban: '), quiz.teksJawaban(s),
+        jawabanLain.length ? ` (juga diterima: ${jawabanLain.join(', ')})` : ''),
+      el('p', {}, el('strong', {}, 'Petunjuk: '), s.petunjuk || '—'),
+      el('p', {}, el('strong', {}, 'Penjelasan: '), s.penjelasan || '—'),
+      el('button', {
+        class: 'tombol kedua kecil', type: 'button',
+        onclick: () => tanya({ soal: s, kelas: s.kelas, catatStatistik: false, judul: 'Mencoba soal (tidak dicatat)' }),
+      }, 'Coba soal ini'));
+  }
+
+  function gambar() {
+    const hasil = quiz.semuaSoal().filter(s =>
+      (!filter.mapel || s.mapel === filter.mapel) &&
+      (!filter.kelas || s.kelas === Number(filter.kelas)) &&
+      (!filter.hanyaCek || s.cek));
+    info.textContent = `Menampilkan ${hasil.length} soal.`;
+    wadah.replaceChildren(...hasil.map(kartu));
+  }
+
+  const masalah = quiz.masalahBank();
+  kerangka(app,
+    el('h1', { tabindex: '-1' }, 'Bank Soal'),
+    el('p', {}, el('button', { class: 'tombol kedua', type: 'button', onclick: () => tampilDasbor(app) }, '← Kembali ke Mode Guru')),
+    masalah.length > 0 && el('section', { class: 'panel peringatan' },
+      el('p', {}, 'Soal berikut tidak dipakai karena formatnya salah:'),
+      el('ul', {}, masalah.map(m => el('li', {}, `${m.id}: ${m.masalah.join(', ')}`)))),
+    el('section', { class: 'panel filter-bank' },
+      el('label', { for: 'f-mapel' }, 'Mapel'), pilihMapel,
+      el('label', { for: 'f-kelas' }, 'Kelas'), pilihKelas,
+      el('label', { class: 'centang' }, centangCek, ' Hanya yang perlu dicek')),
+    info,
+    wadah);
+  gambar();
 }

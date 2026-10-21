@@ -101,6 +101,25 @@ export function toast(pesan, jenis = 'info', durasi = 2600) {
 const TERFOKUS = 'button:not([disabled]), input:not([disabled]), select, textarea, a[href], [tabindex]:not([tabindex="-1"])';
 
 /**
+ * Jaga agar Tab tetap berputar di dalam `kotak` (untuk dialog). Esc memanggil
+ * `saatEsc` jika diberikan. Mengembalikan fungsi pelepas.
+ */
+export function jebakFokus(kotak, saatEsc = null) {
+  function saatTombol(e) {
+    if (e.key === 'Escape' && saatEsc) { e.preventDefault(); saatEsc(); return; }
+    if (e.key !== 'Tab') return;
+    const fokus = [...kotak.querySelectorAll(TERFOKUS)].filter(x => !x.closest('[inert]'));
+    if (!fokus.length) return;
+    const pertama = fokus[0];
+    const terakhir = fokus[fokus.length - 1];
+    if (e.shiftKey && document.activeElement === pertama) { e.preventDefault(); terakhir.focus(); }
+    else if (!e.shiftKey && document.activeElement === terakhir) { e.preventDefault(); pertama.focus(); }
+  }
+  document.addEventListener('keydown', saatTombol, true);
+  return () => document.removeEventListener('keydown', saatTombol, true);
+}
+
+/**
  * Tampilkan modal. Mengembalikan Promise berisi `nilai` tombol yang ditekan
  * (null jika ditutup dengan Esc). `sebelumTutup(nilai)` boleh mengembalikan
  * false agar modal tetap terbuka (mis. isian belum valid).
@@ -122,24 +141,13 @@ export function modal({ judul, isi = null, tombol = [{ teks: 'Tutup', nilai: nul
 
     async function tutup(nilai) {
       if (nilai !== null && sebelumTutup && (await sebelumTutup(nilai)) === false) return;
-      document.removeEventListener('keydown', saatTombol, true);
+      lepas();
       latar.remove();
       sebelumnya?.focus?.({ preventScroll: true });
       selesai(nilai);
     }
 
-    function saatTombol(e) {
-      if (e.key === 'Escape') { e.preventDefault(); tutup(null); return; }
-      if (e.key !== 'Tab') return;
-      const fokus = [...kotak.querySelectorAll(TERFOKUS)];
-      if (!fokus.length) return;
-      const pertama = fokus[0];
-      const terakhir = fokus[fokus.length - 1];
-      if (e.shiftKey && document.activeElement === pertama) { e.preventDefault(); terakhir.focus(); }
-      else if (!e.shiftKey && document.activeElement === terakhir) { e.preventDefault(); pertama.focus(); }
-    }
-
-    document.addEventListener('keydown', saatTombol, true);
+    const lepas = jebakFokus(kotak, () => tutup(null));
     document.body.append(latar);
     (kotak.querySelector('input, select, textarea') || tombolEl[tombolEl.length - 1])?.focus();
   });
@@ -161,9 +169,11 @@ const layarSentuh = () => window.matchMedia('(pointer: coarse)').matches;
 
 /**
  * Papan angka besar untuk tablet + kotak isian yang juga bisa diketik dengan keyboard.
+ * `tambahan` = tombol karakter lain, mis. ['-', ','] untuk bilangan negatif dan desimal.
  * Mengembalikan { elemen, input, nilai(), kosongkan(), fokus() }.
  */
-export function papanAngka({ saatKirim, maksDigit = 6, label = 'Jawaban', rahasia = false, teksKirim = 'OK' }) {
+export function papanAngka({ saatKirim, maksDigit = 6, label = 'Jawaban', rahasia = false, teksKirim = 'OK', tambahan = [] }) {
+  const boleh = new RegExp(`[^0-9${tambahan.map(c => '\\' + c).join('')}]`, 'g');
   const input = el('input', {
     class: 'papan-tampil',
     type: rahasia ? 'password' : 'text',
@@ -173,7 +183,7 @@ export function papanAngka({ saatKirim, maksDigit = 6, label = 'Jawaban', rahasi
     maxlength: String(maksDigit),
     'aria-label': label,
   });
-  input.addEventListener('input', () => { input.value = input.value.replace(/\D/g, '').slice(0, maksDigit); });
+  input.addEventListener('input', () => { input.value = input.value.replace(boleh, '').slice(0, maksDigit); });
   input.addEventListener('keydown', e => {
     if (e.key === 'Enter') { e.preventDefault(); kirim(); }
   });
@@ -198,7 +208,13 @@ export function papanAngka({ saatKirim, maksDigit = 6, label = 'Jawaban', rahasi
   );
 
   return {
-    elemen: el('div', { class: 'papan-angka' }, input, el('div', { class: 'papan-tombol' }, tombol)),
+    elemen: el('div', { class: 'papan-angka' },
+      input,
+      tambahan.length > 0 && el('div', { class: 'papan-tambahan' }, tambahan.map(c => el('button', {
+        type: 'button', class: 'tombol kedua tombol-angka', onclick: () => tekan(c),
+        'aria-label': c === '-' ? 'Tanda minus' : c === ',' ? 'Koma' : c,
+      }, c === '-' ? '−' : c))),
+      el('div', { class: 'papan-tombol' }, tombol)),
     input,
     nilai: () => input.value,
     kosongkan: () => { input.value = ''; },

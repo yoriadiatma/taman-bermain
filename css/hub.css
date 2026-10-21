@@ -128,3 +128,35 @@
 }
 .info-profil { display: flex; flex-direction: column; flex: 1; min-width: 160px; }
 .info-profil span { color: var(--teks-lemah); font-size: 0.85rem; }
+
+/* Statistik & bank soal (Mode Guru) */
+.stat-profil { border: 2px solid #d5d9e0; border-radius: 12px; padding: 10px 14px; margin-bottom: 12px; }
+.stat-profil summary { font-weight: 800; cursor: pointer; min-height: 40px; display: list-item; }
+.stat-profil h3 { font-size: 1rem; margin: 16px 0 8px; }
+.tabel-gulir { overflow-x: auto; margin-bottom: 12px; }
+.tabel { border-collapse: collapse; width: 100%; font-size: 0.85rem; }
+.tabel th, .tabel td { border: 2px solid #d5d9e0; padding: 6px 10px; text-align: left; }
+.tabel th { background: #f1f3f5; }
+.tabel tr.perlu-latihan td { background: #fff0c2; font-weight: 700; }
+.soal-sulit { font-size: 0.9rem; }
+.soal-sulit li { margin-bottom: 6px; white-space: pre-line; }
+
+.chip-abu { background: #495057; }
+.filter-bank { display: flex; flex-wrap: wrap; align-items: center; gap: 10px 14px; }
+.filter-bank .masukan { width: auto; min-width: 180px; }
+.filter-bank .centang { display: flex; align-items: center; gap: 8px; font-weight: 700; min-height: 48px; }
+.filter-bank input[type="checkbox"] { width: 26px; height: 26px; }
+.soal-pratinjau {
+  background: var(--kartu);
+  border: 2px solid #d5d9e0;
+  border-radius: 14px;
+  padding: 14px 16px;
+  margin-bottom: 12px;
+  font-size: 0.9rem;
+}
+.soal-pratinjau p { margin-bottom: 6px; }
+.pratinjau-tanya { font-size: 1.05rem; font-weight: 700; white-space: pre-line; margin-top: 8px; }
+.pratinjau-pilihan { margin: 0 0 8px; }
+.pratinjau-pilihan .benar { color: var(--sukses); font-weight: 800; }
+.pratinjau-pilihan .benar::after { content: " ✓"; }
+.id-soal { color: var(--teks-lemah); font-size: 0.8rem; align-self: center; }

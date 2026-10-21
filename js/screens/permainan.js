@@ -5,6 +5,8 @@ import * as audio from '../core/audio.js';
 import * as storage from '../core/storage.js';
 import * as profil from '../core/profile.js';
 import * as registry from '../core/registry.js';
+import * as quiz from '../core/quiz.js';
+import { tanya, tutupSemua as tutupSemuaSoal } from '../core/quiz-ui.js';
 import { ke } from '../core/router.js';
 
 const { el } = ui;
@@ -38,6 +40,13 @@ export function tampilPermainan(app, id) {
     store: storage.untukGame(p.id, def.id),
     audio,
     ui,
+    // Soal sesuai kelas profil. Lihat js/core/quiz-ui.js untuk opsi tanya().
+    quiz: {
+      tanya: (opsi = {}) => tanya({ idProfil: p.id, kelas: p.kelas, ...opsi }),
+      pilih: (opsi = {}) => quiz.pilihSoal({ idProfil: p.id, kelas: p.kelas, ...opsi }),
+      periksa: quiz.periksaJawaban,
+      catat: (soal, benar) => quiz.catat(p.id, soal, benar),
+    },
     keluar: () => ke('/hub'),
   };
 
@@ -57,6 +66,7 @@ export function tampilPermainan(app, id) {
   // Dipanggil router sebelum pindah layar: simpan dulu, baru lepas game.
   return () => {
     lepasPengait();
+    tutupSemuaSoal();
     if (terpasang) {
       try { def.simpan?.(); } catch (e) { console.error(e); }
       storage.flush();

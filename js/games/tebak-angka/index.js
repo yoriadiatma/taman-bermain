@@ -59,7 +59,10 @@ function render() {
       el('h2', {}, pujian()),
       bintang(b),
       el('p', {}, `Kamu berhasil dengan ${state.tebakan.length} tebakan. Kalau selalu menebak angka di tengah rentang, paling banyak cukup ${tebakanIdeal(state.n)} tebakan.`),
-      el('button', { class: 'tombol utama', type: 'button', onclick: mainLagi }, 'Main lagi'));
+      el('div', { class: 'baris-tombol ta-tombol-menang' },
+        el('button', { class: 'tombol utama', type: 'button', onclick: mainLagi }, 'Main lagi'),
+        el('button', { class: 'tombol sukses', type: 'button', onclick: soalBonus }, 'Soal Bonus')),
+      el('p', { class: 'catatan' }, `Soal bonus benar: ${s.ctx.store.get('bonus', 0)}`));
   }
 }
 
@@ -113,6 +116,14 @@ function petunjuk() {
   const { bawah, atas } = s.state;
   const tengah = Math.floor((bawah + atas) / 2);
   pesan(`Petunjuk: coba angka di tengah. (${bawah} + ${atas}) : 2 = ${tengah}${(bawah + atas) % 2 ? ' sisa 1' : ''}. Jadi coba ${tengah}.`, 'info');
+}
+
+// Uji mesin soal: satu soal acak dari semua mapel sesuai kelas.
+async function soalBonus() {
+  const hasil = await s.ctx.quiz.tanya({ judul: 'Soal Bonus' });
+  if (!s) return; // pemain sudah keluar dari game
+  if (hasil.benar) s.ctx.store.set('bonus', s.ctx.store.get('bonus', 0) + 1);
+  render();
 }
 
 function mainLagi() {
