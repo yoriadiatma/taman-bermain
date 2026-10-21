@@ -4,7 +4,7 @@ Kumpulan game edukasi untuk anak SD kelas 4–6 (Kurikulum Merdeka), dengan muat
 Aplikasi web statis: HTML, CSS, dan JavaScript vanilla (ES modules), tanpa server, tanpa build tool,
 dan tanpa dependensi luar. Progres disimpan di `localStorage` browser masing-masing perangkat.
 
-> Status: **Tahap 9**. Game: Blok Petualang, Catur, Kebun Ceria, Pasangan Kilat, Pasar Mini, Ular Tangga Matematika. README ini dilengkapi di Tahap 12.
+> Status: **Tahap 10**. Game: Blok Petualang, Catur, Petualangan Kata, Kebun Ceria, Pasangan Kilat, Pasar Mini, Ular Tangga Matematika. README ini dilengkapi di Tahap 12.
 
 ## Menjalankan di komputer sendiri
 
@@ -72,6 +72,7 @@ Buka <http://localhost:8000/test.html> untuk menjalankan semua uji otomatis:
 - Blok Petualang: dunia dari seed, diff simpanan, fisika pemain, tas, resep (soal hitungannya selalu benar), menambang, menaruh, rumah, misi, dan peti.
 - Pasangan Kilat: jumlah kartu, tidak ada kartu kembar, jawaban hitungan dan nilai pecahan benar.
 - Ular Tangga: posisi tangga/ular/petak soal tidak bertumpuk, bonus tidak mendarat di kepala ular, penomoran papan.
+- Petualangan Kata: data kata (huruf kapital, unik), labirin selalu tersambung, huruf kata tidak pernah tertutup gerbang, pengecoh dari ejaan keliru.
 - Kebun Ceria: tumbuh hanya jika disiram, layu dan pulih, hujan, kompos, ternak, jual beli, soal siklus dan soal membagi panen.
 - Pasar Mini: total, diskon, pembayaran, dan kembalian selalu benar; susunan uang paling sedikit (dibandingkan dengan pencarian lengkap); soal infak.
 
@@ -105,6 +106,16 @@ File uji tiap game ada di `js/games/<id>/uji.js` dan didaftarkan di `uji/index.j
   Kata & Emoji, Hewan & Tumbuhan. Jumlah kartu 8–24, pilihan mengikuti kelas.
 - Daftar kata, emoji, dan ciri makhluk hidup ada di `data/pasangan.js`; setiap teks harus unik di daftarnya.
 - Rekor terbaik (bintang, waktu, percobaan) disimpan per tema dan jumlah kartu.
+
+## Petualangan Kata
+
+- Labirin dibuat otomatis per level (sama setiap kali level itu dimainkan). Anak membaca petunjuk, lalu mengumpulkan
+  huruf kata jawabannya secara berurutan. Menginjak huruf tidak langsung mengambilnya: ambil dengan Spasi/Enter,
+  tombol ✋, atau ketuk hurufnya.
+- Huruf pengecoh diambil dari ejaan yang sering keliru (mis. I dan H untuk "apotek" vs "apotik"/"himbau").
+- Gerbang 🚪 dibuka dengan soal Bahasa Indonesia dari bank soal. Gerbang tidak pernah menutup huruf kata.
+- 15 kata per kelas di `data/kata.js` (kata baku, imbuhan, kata ulang, sinonim/antonim, kosakata IPA dan Islami;
+  kosakata Islami ditandai TODO verifikasi). Kata yang berhasil disusun masuk ke 📖 Kamus Kata.
 
 ## Kebun Ceria
 
