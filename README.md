@@ -4,7 +4,7 @@ Kumpulan game edukasi untuk anak SD kelas 4–6 (Kurikulum Merdeka), dengan muat
 Aplikasi web statis: HTML, CSS, dan JavaScript vanilla (ES modules), tanpa server, tanpa build tool,
 dan tanpa dependensi luar. Progres disimpan di `localStorage` browser masing-masing perangkat.
 
-> Status: **Tahap 8**. Game: Blok Petualang, Catur, Pasangan Kilat, Pasar Mini, Ular Tangga Matematika. README ini dilengkapi di Tahap 12.
+> Status: **Tahap 9**. Game: Blok Petualang, Catur, Kebun Ceria, Pasangan Kilat, Pasar Mini, Ular Tangga Matematika. README ini dilengkapi di Tahap 12.
 
 ## Menjalankan di komputer sendiri
 
@@ -72,6 +72,7 @@ Buka <http://localhost:8000/test.html> untuk menjalankan semua uji otomatis:
 - Blok Petualang: dunia dari seed, diff simpanan, fisika pemain, tas, resep (soal hitungannya selalu benar), menambang, menaruh, rumah, misi, dan peti.
 - Pasangan Kilat: jumlah kartu, tidak ada kartu kembar, jawaban hitungan dan nilai pecahan benar.
 - Ular Tangga: posisi tangga/ular/petak soal tidak bertumpuk, bonus tidak mendarat di kepala ular, penomoran papan.
+- Kebun Ceria: tumbuh hanya jika disiram, layu dan pulih, hujan, kompos, ternak, jual beli, soal siklus dan soal membagi panen.
 - Pasar Mini: total, diskon, pembayaran, dan kembalian selalu benar; susunan uang paling sedikit (dibandingkan dengan pencarian lengkap); soal infak.
 
 File uji tiap game ada di `js/games/<id>/uji.js` dan didaftarkan di `uji/index.js`. Semua uji harus berwarna hijau. Halaman ini tidak tampil di menu aplikasi.
@@ -104,6 +105,16 @@ File uji tiap game ada di `js/games/<id>/uji.js` dan didaftarkan di `uji/index.j
   Kata & Emoji, Hewan & Tumbuhan. Jumlah kartu 8–24, pilihan mengikuti kelas.
 - Daftar kata, emoji, dan ciri makhluk hidup ada di `data/pasangan.js`; setiap teks harus unik di daftarnya.
 - Rekor terbaik (bintang, waktu, percobaan) disimpan per tema dan jumlah kartu.
+
+## Kebun Ceria
+
+- Dimainkan per hari: siram tanaman, lalu tekan 🌙 Tidur. Tanaman yang disiram tumbuh satu langkah setiap malam;
+  2 hari tidak disiram membuat layu (pulih jika disiram). Kadang hujan menyiram semua tanaman.
+- Saat panen anak menjawab soal (bergantian: menyusun urutan tahap tumbuh, atau soal IPA dari bank soal); benar = +2 hasil.
+- Setelah panen, tetangga kadang datang: anak menghitung bagian yang dibagikan (kelas 4 pecahan, kelas 5 sisa setelah
+  pecahan dijual, kelas 6 persen/perbandingan). Berbagi menambah poin kebaikan.
+- Sisa tanaman → kompos (pengurai) → hasil panen +50%. Ternak (ayam, kambing, sapi) diberi makan hari ini, hasilnya besok.
+- Data tanaman, hewan, dan teks pengetahuannya ada di `data/kebun.js` (ditandai TODO verifikasi).
 
 ## Pasar Mini
 
