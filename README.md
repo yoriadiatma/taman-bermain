@@ -4,7 +4,7 @@ Kumpulan game edukasi untuk anak SD kelas 4–6 (Kurikulum Merdeka), dengan muat
 Aplikasi web statis: HTML, CSS, dan JavaScript vanilla (ES modules), tanpa server, tanpa build tool,
 dan tanpa dependensi luar. Progres disimpan di `localStorage` browser masing-masing perangkat.
 
-> Status: **Tahap 4 (Catur lengkap: AI, belajar, puzzle)**. Game: Catur dan game uji "Tebak Angka". README ini dilengkapi di Tahap 12.
+> Status: **Tahap 5 (Blok Petualang: dunia & gerak)**. Game: Catur, Blok Petualang, dan game uji "Tebak Angka". README ini dilengkapi di Tahap 12.
 
 ## Menjalankan di komputer sendiri
 
@@ -63,8 +63,12 @@ Jika format data berubah, naikkan `SCHEMA` di `js/core/storage.js` dan tambahkan
 
 ## Uji otomatis
 
-Buka <http://localhost:8000/test.html> untuk menjalankan uji catur: aturan (rokade, en passant, promosi,
-skakmat, remis, perft), kebenaran semua puzzle, pelajaran Belajar Bidak, dan komputer (termasuk Web Worker). Semua uji harus berwarna hijau. Halaman ini tidak tampil di menu aplikasi.
+Buka <http://localhost:8000/test.html> untuk menjalankan semua uji otomatis:
+
+- Catur: aturan (rokade, en passant, promosi, skakmat, remis, perft), kebenaran semua puzzle, pelajaran Belajar Bidak, dan komputer (termasuk Web Worker).
+- Blok Petualang: dunia dari seed (sama persis untuk seed yang sama), titik muncul, sebaran bijih, dan fisika pemain.
+
+File uji tiap game ada di `js/games/<id>/uji.js` dan didaftarkan di `uji/index.js`. Semua uji harus berwarna hijau. Halaman ini tidak tampil di menu aplikasi.
 
 ## Catur
 
@@ -72,6 +76,12 @@ skakmat, remis, perft), kebenaran semua puzzle, pelajaran Belajar Bidak, dan kom
   dibatasi sekitar 2 detik). Komputer berjalan di Web Worker (`js/games/catur/ai-worker.js`).
 - Puzzle ada di `data/catur-puzzle.js` (format FEN + langkah solusi UCI). Setelah menambah puzzle, buka `test.html`:
   uji akan memastikan solusinya benar-benar skakmat.
+
+## Blok Petualang
+
+- Dunia 384 × 128 blok dibuat dari sebuah seed (`js/games/blok/dunia.js`); setiap profil punya seed sendiri.
+- Kontrol: ← → / A D untuk jalan, ↑ / W / Spasi untuk lompat; tombol ◀ ▶ ▲ muncul di layar sentuh.
+- Tambahkan `?debug` di URL (mis. `http://localhost:8000/?debug#/main/blok`) untuk menampilkan FPS.
 
 ## Mode Guru
 

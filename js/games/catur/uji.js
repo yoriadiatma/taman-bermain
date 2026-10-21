@@ -1,22 +1,13 @@
-// uji.js — uji aturan catur, dijalankan dari test.html.
+// uji.js — uji aturan catur, AI, puzzle, dan Belajar Bidak. Dijalankan dari test.html.
 
+import { uji as ujiDasar, sama, benar } from '../../../uji/alat.js';
 import { Catur, AWAL, sanIndonesia, langkahBebas, indeksKotak } from './mesin.js';
 import { cariLangkah, evaluasi } from './ai.js';
 import { mintaLangkah, hentikan } from './komputer.js';
 import { PELAJARAN } from './belajar.js';
 import { PUZZLE } from '../../../data/catur-puzzle.js';
 
-const daftar = [];
-const uji = (nama, fn) => daftar.push({ nama, fn });
-
-function sama(a, b, pesan = '') {
-  const ja = JSON.stringify(a);
-  const jb = JSON.stringify(b);
-  if (ja !== jb) throw new Error(`${pesan} diharapkan ${jb}, didapat ${ja}`);
-}
-function benar(x, pesan) {
-  if (!x) throw new Error(pesan);
-}
+const uji = (nama, fn) => ujiDasar('Catur', nama, fn);
 const ucis = c => c.langkahLegal().map(Catur.uci).sort();
 const mainkan = (c, langkah) => langkah.forEach(l => benar(c.jalan(l), `langkah ${l} seharusnya legal`));
 
@@ -357,32 +348,3 @@ uji('Komputer berjalan di Web Worker dan membalas langkah legal', async () => {
   benar(new Catur().jalan(r.uci), `langkah ${r.uci} tidak legal`);
   hentikan();
 });
-
-// ---------- Menjalankan ----------
-
-async function jalankan() {
-  const ol = document.getElementById('hasil');
-  let lulus = 0;
-  for (const { nama, fn } of daftar) {
-    const li = document.createElement('li');
-    const mulai = performance.now();
-    try {
-      await fn();
-      lulus++;
-      li.className = 'lulus';
-      li.textContent = `✓ ${nama} (${Math.round(performance.now() - mulai)} ms)`;
-    } catch (e) {
-      li.className = 'gagal';
-      li.textContent = `✗ ${nama}: ${e.message}`;
-      console.error(nama, e);
-    }
-    ol.append(li);
-    await new Promise(r => setTimeout(r, 0)); // beri kesempatan layar diperbarui
-  }
-  const r = document.getElementById('ringkasan');
-  r.textContent = `${lulus} dari ${daftar.length} uji lulus.`;
-  r.className = lulus === daftar.length ? 'lulus' : 'gagal';
-  document.title = `${lulus === daftar.length ? '✓' : '✗'} Uji Catur`;
-}
-
-jalankan();
