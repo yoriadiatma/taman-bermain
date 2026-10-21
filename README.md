@@ -4,7 +4,7 @@ Kumpulan game edukasi untuk anak SD kelas 4–6 (Kurikulum Merdeka), dengan muat
 Aplikasi web statis: HTML, CSS, dan JavaScript vanilla (ES modules), tanpa server, tanpa build tool,
 dan tanpa dependensi luar. Progres disimpan di `localStorage` browser masing-masing perangkat.
 
-> Status: **Tahap 7**. Game: Blok Petualang, Catur, Pasangan Kilat, Ular Tangga Matematika. README ini dilengkapi di Tahap 12.
+> Status: **Tahap 8**. Game: Blok Petualang, Catur, Pasangan Kilat, Pasar Mini, Ular Tangga Matematika. README ini dilengkapi di Tahap 12.
 
 ## Menjalankan di komputer sendiri
 
@@ -72,6 +72,7 @@ Buka <http://localhost:8000/test.html> untuk menjalankan semua uji otomatis:
 - Blok Petualang: dunia dari seed, diff simpanan, fisika pemain, tas, resep (soal hitungannya selalu benar), menambang, menaruh, rumah, misi, dan peti.
 - Pasangan Kilat: jumlah kartu, tidak ada kartu kembar, jawaban hitungan dan nilai pecahan benar.
 - Ular Tangga: posisi tangga/ular/petak soal tidak bertumpuk, bonus tidak mendarat di kepala ular, penomoran papan.
+- Pasar Mini: total, diskon, pembayaran, dan kembalian selalu benar; susunan uang paling sedikit (dibandingkan dengan pencarian lengkap); soal infak.
 
 File uji tiap game ada di `js/games/<id>/uji.js` dan didaftarkan di `uji/index.js`. Semua uji harus berwarna hijau. Halaman ini tidak tampil di menu aplikasi.
 
@@ -103,6 +104,17 @@ File uji tiap game ada di `js/games/<id>/uji.js` dan didaftarkan di `uji/index.j
   Kata & Emoji, Hewan & Tumbuhan. Jumlah kartu 8–24, pilihan mengikuti kelas.
 - Daftar kata, emoji, dan ciri makhluk hidup ada di `data/pasangan.js`; setiap teks harus unik di daftarnya.
 - Rekor terbaik (bintang, waktu, percobaan) disimpan per tema dan jumlah kartu.
+
+## Pasar Mini
+
+- **Jadi Kasir**: pembeli datang dengan belanjaan; anak menghitung total (kelas 5–6 juga diskon persen), lalu menyusun
+  kembalian dari laci uang. Bintang penuh jika total dan kembalian benar pada percobaan pertama dengan lembar/keping
+  paling sedikit. Sesekali ada pilihan berbuat jujur (mengembalikan uang lebih). Setiap 5 pembeli, warung tutup dan
+  anak menghitung infak (kelas 4: 1/10, kelas 5: 10%, kelas 6: 5/10/20%).
+- **Jadi Pembeli**: memilih barang sesuai daftar belanja, menghitung total, membayar dari dompet, menghitung kembalian.
+- **Kenali Uang**: menyusun jumlah uang yang tepat dengan pecahan sesedikit mungkin.
+- Pecahan uang dan barang dagangan ada di `data/pasar.js`. Uang digambar dengan kode (bukan tiruan uang asli).
+- Level warung naik setelah 5, 15, dan 30 pembeli; setiap level membuka barang baru.
 
 ## Ular Tangga Matematika
 

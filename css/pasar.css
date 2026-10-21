@@ -1,0 +1,75 @@
+/* pasar.css — game Pasar Mini. */
+
+.ps { max-width: 1100px; }
+.ps-toko { display: flex; flex-wrap: wrap; align-items: center; gap: 10px 20px; padding: 12px 16px; background: #fff3bf; }
+.ps-papan-nama { font-size: 1.3rem; font-weight: 900; color: #862e9c; }
+.ps-statistik { display: flex; flex-wrap: wrap; gap: 6px 14px; font-weight: 700; font-size: 0.85rem; }
+.ps-tab { display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 16px; }
+.ps-tab .tombol[aria-selected="true"] { background: var(--utama); color: #fff; }
+
+.ps-kasir { display: flex; flex-wrap: wrap; gap: 20px; align-items: flex-start; }
+.ps-pembeli { flex: 1 1 320px; display: flex; gap: 14px; align-items: flex-start; }
+.ps-wajah { font-size: 4rem; line-height: 1; }
+.ps-ucapan { font-weight: 800; font-size: 1.05rem; color: var(--utama-gelap); }
+.ps-kanan { flex: 1 1 380px; min-width: 280px; }
+
+.ps-struk { background: #fff; border: 2px dashed #adb5bd; border-radius: 10px; padding: 10px 14px; font-family: ui-monospace, Consolas, monospace; }
+.ps-struk ul { list-style: none; margin: 0; padding: 0; display: grid; gap: 6px; }
+.ps-struk li { display: flex; flex-wrap: wrap; align-items: center; gap: 4px 8px; }
+.ps-harga { margin-left: auto; color: var(--teks-lemah); }
+.ps-total { margin: 10px 0 0; padding-top: 8px; border-top: 2px dashed #adb5bd; font-size: 1.1rem; }
+.ps-diskon { margin: 8px 0 0; font-weight: 800; color: var(--bahaya); font-family: system-ui, sans-serif; }
+.ps-emoji { font-size: 1.4rem; line-height: 1; }
+.ps-emoji.besar { font-size: 2.4rem; }
+.ps-judul-kecil { font-weight: 800; margin: 10px 0 6px; font-size: 0.9rem; }
+
+.ps-langkah { margin-bottom: 8px; }
+.ps-pesan { min-height: 1.5em; font-weight: 800; }
+.ps-pesan.benar { color: var(--sukses); }
+.ps-pesan.salah { color: var(--peringatan); }
+.ps-pesan .bintang { font-size: 1.6rem; vertical-align: middle; }
+
+.ps-diterima { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 8px; }
+.ps-uang-tampil { display: inline-block; }
+.ps-uang-tampil.kertas { width: 140px; }
+.ps-uang-tampil.koin { width: 64px; }
+.ps-uang-tampil.kecil.kertas { width: 110px; }
+.ps-uang-tampil.kecil.koin { width: 52px; }
+.ps-uang-tampil svg { display: block; width: 100%; height: auto; }
+
+.ps-laci-wadah { background: #f8f9fa; border: 3px solid var(--garis); border-radius: 14px; padding: 4px 12px 10px; margin-bottom: 10px; }
+.ps-laci, .ps-nampan { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+.ps-nampan { min-height: 64px; padding: 8px; border: 2px dashed #adb5bd; border-radius: 10px; background: #fff; }
+.ps-uang { padding: 0; border: 0; background: none; cursor: pointer; touch-action: manipulation; border-radius: 8px; transition: transform 0.08s; }
+.ps-uang:active:not(:disabled) { transform: scale(0.94); }
+.ps-uang:disabled { opacity: 0.25; cursor: not-allowed; }
+.ps-uang.kertas { width: 96px; }
+.ps-uang.koin { width: 54px; }
+.ps-uang svg { display: block; width: 100%; height: auto; pointer-events: none; }
+.ps-jumlah { margin: 8px 0 0; font-weight: 800; }
+
+.ps-belanja { display: grid; grid-template-columns: minmax(220px, 1fr) 2fr; gap: 20px; align-items: start; }
+.ps-tugas ul { list-style: none; padding: 0; margin: 0; display: grid; gap: 6px; font-weight: 800; font-size: 1.1rem; }
+.ps-tugas li, .ps-keranjang li { display: flex; align-items: center; gap: 8px; }
+.ps-rak { display: grid; grid-template-columns: repeat(auto-fill, minmax(120px, 1fr)); gap: 10px; margin-bottom: 12px; }
+.ps-barang {
+  display: flex; flex-direction: column; align-items: center; gap: 4px;
+  padding: 10px 6px; border: 3px solid var(--garis); border-radius: 14px; background: #fff;
+  cursor: pointer; touch-action: manipulation; box-shadow: var(--bayang); font-size: 0.85rem;
+}
+.ps-barang:active { transform: translateY(2px); }
+.ps-keranjang { list-style: none; padding: 0; margin: 0 0 12px; display: grid; gap: 6px; }
+.ps-keranjang .tombol { margin-left: auto; --tinggi-tombol: 36px; min-width: 36px; padding: 0 10px; }
+
+.ps-kenali { max-width: 900px; }
+.ps-target { font-size: 1.4rem; font-weight: 800; }
+.ps-target strong { color: var(--utama-gelap); font-size: 1.8rem; }
+
+@media (max-width: 700px) {
+  .ps-belanja { grid-template-columns: 1fr; }
+  .ps-pembeli { flex-direction: column; align-items: stretch; }
+  .ps-wajah { font-size: 3rem; }
+  .ps-struk { font-size: 0.85rem; }
+  .ps-uang.kertas { width: 80px; }
+  .ps-uang.koin { width: 46px; }
+}
