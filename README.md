@@ -4,7 +4,7 @@ Kumpulan game edukasi untuk anak SD kelas 4–6 (Kurikulum Merdeka), dengan muat
 Aplikasi web statis: HTML, CSS, dan JavaScript vanilla (ES modules), tanpa server, tanpa build tool,
 dan tanpa dependensi luar. Progres disimpan di `localStorage` browser masing-masing perangkat.
 
-> Status: **Tahap 2 (mesin soal + bank soal)**. Baru ada game uji "Tebak Angka". README ini dilengkapi di Tahap 12.
+> Status: **Tahap 3 (Catur: aturan lengkap, 2 pemain)**. Game: Catur dan game uji "Tebak Angka". README ini dilengkapi di Tahap 12.
 
 ## Menjalankan di komputer sendiri
 
@@ -60,6 +60,11 @@ Semua key berawalan `tgb:` (origin github.io dipakai bersama project lain):
 | `tgb:p:<idProfil>:quiz` | statistik soal per profil |
 
 Jika format data berubah, naikkan `SCHEMA` di `js/core/storage.js` dan tambahkan fungsi di `MIGRASI`.
+
+## Uji otomatis
+
+Buka <http://localhost:8000/test.html> untuk menjalankan uji aturan catur (rokade, en passant, promosi,
+skakmat, remis, dan perft). Semua uji harus berwarna hijau. Halaman ini tidak tampil di menu aplikasi.
 
 ## Mode Guru
 

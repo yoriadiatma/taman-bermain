@@ -4,16 +4,18 @@
 // baru ke BERKAS. Saat versi naik, cache lama milik aplikasi ini dihapus.
 // Service worker tidak didaftarkan di localhost (lihat js/main.js).
 
-const VERSI_CACHE = 'tgb-v2';
+const VERSI_CACHE = 'tgb-v3';
 // Origin <username>.github.io dipakai bersama project lain: hanya sentuh cache berawalan ini.
 const AWALAN_CACHE = 'tgb-';
 
+// test.html dan js/games/catur/uji.js sengaja tidak di-cache (hanya untuk pengembang).
 const BERKAS = [
   './',
   'index.html',
   'manifest.json',
   'ikon.svg',
   'css/base.css',
+  'css/catur.css',
   'css/hub.css',
   'css/quiz.css',
   'css/tebak-angka.css',
@@ -38,6 +40,9 @@ const BERKAS = [
   'js/core/teacher.js',
   'js/core/ui.js',
   'js/games/index.js',
+  'js/games/catur/bidak.js',
+  'js/games/catur/index.js',
+  'js/games/catur/mesin.js',
   'js/games/tebak-angka/index.js',
   'js/screens/hub.js',
   'js/screens/pengaturan.js',

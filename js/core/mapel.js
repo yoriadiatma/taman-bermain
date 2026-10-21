@@ -7,6 +7,11 @@ export const MAPEL = {
   ipa: { nama: 'IPA', warna: '#237032' },
   nusantara: { nama: 'Pengetahuan Umum', warna: '#862e9c' },
   pai: { nama: 'Pendidikan Agama Islam', warna: '#0b7285' },
+  // Label untuk game strategi (mis. catur); tidak punya soal di bank soal.
+  logika: { nama: 'Logika & Strategi', warna: '#5f3dc4', tanpaSoal: true },
 };
 
 export const namaMapel = id => MAPEL[id]?.nama ?? id;
+
+/** Mapel yang dipakai di bank soal. */
+export const MAPEL_SOAL = Object.keys(MAPEL).filter(id => !MAPEL[id].tanpaSoal);

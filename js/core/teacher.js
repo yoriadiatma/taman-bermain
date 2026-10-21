@@ -11,7 +11,7 @@ import * as profil from './profile.js';
 import * as audio from './audio.js';
 import * as quiz from './quiz.js';
 import { tanya } from './quiz-ui.js';
-import { MAPEL } from './mapel.js';
+import { MAPEL, MAPEL_SOAL } from './mapel.js';
 import { ke } from './router.js';
 import { eksporProgres } from './cadangan.js';
 
@@ -273,7 +273,7 @@ function bagianBankSoal(app) {
   const masalah = quiz.masalahBank();
   return el('section', { class: 'panel' },
     el('h2', {}, 'Bank Soal'),
-    tabel(['Mapel', ...KELAS_BANK.map(k => `Kelas ${k}`), 'Perlu dicek'], Object.keys(MAPEL).map(m => el('tr', {},
+    tabel(['Mapel', ...KELAS_BANK.map(k => `Kelas ${k}`), 'Perlu dicek'], MAPEL_SOAL.map(m => el('tr', {},
       el('td', {}, namaMapel(m)),
       KELAS_BANK.map(k => el('td', {}, hitung(m, k))),
       el('td', {}, semua.filter(s => s.mapel === m && s.cek).length)))),
@@ -290,7 +290,7 @@ function tampilBankSoal(app) {
 
   const pilihMapel = el('select', { id: 'f-mapel', class: 'masukan' },
     el('option', { value: '' }, 'Semua mapel'),
-    Object.entries(MAPEL).map(([id, m]) => el('option', { value: id }, m.nama)));
+    MAPEL_SOAL.map(id => el('option', { value: id }, namaMapel(id))));
   const pilihKelas = el('select', { id: 'f-kelas', class: 'masukan' },
     el('option', { value: '' }, 'Semua kelas'),
     KELAS_BANK.map(k => el('option', { value: String(k) }, `Kelas ${k}`)));

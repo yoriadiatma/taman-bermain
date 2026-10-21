@@ -1,0 +1,105 @@
+/* catur.css — papan dan panel game Catur. */
+
+.catur { display: flex; flex-wrap: wrap; gap: 24px; align-items: flex-start; }
+.catur-kiri { flex: 0 1 auto; width: min(100%, 600px, calc(100vh - 150px)); min-width: 280px; }
+.catur-kanan { flex: 1 1 260px; min-width: 240px; }
+
+.catur-status {
+  margin: 0 0 10px;
+  padding: 8px 14px;
+  border: 3px solid var(--garis);
+  border-radius: 12px;
+  font-weight: 800;
+  font-size: 1.1rem;
+}
+.catur-status.giliran-w { background: #fbfbf8; }
+.catur-status.giliran-b { background: #2b2f3a; color: #fff; }
+.catur-status.skak { background: #ffe3e3; color: #a61e1e; }
+.catur-status.selesai { background: #d3f9d8; }
+
+.catur-papan {
+  display: grid;
+  grid-template-columns: repeat(8, 1fr);
+  width: 100%;
+  aspect-ratio: 1;
+  border: 5px solid #5c3d20;
+  border-radius: 6px;
+  overflow: hidden;
+  touch-action: manipulation;
+}
+
+.ck {
+  position: relative;
+  display: block;
+  padding: 0;
+  border: 0;
+  aspect-ratio: 1;
+  cursor: pointer;
+  touch-action: manipulation;
+}
+.ck.terang { background: #f0d9b5; }
+.ck.gelap { background: #b58863; }
+.ck.terakhir.terang { background: #f2e68a; }
+.ck.terakhir.gelap { background: #d4b94b; }
+.ck.dipilih { background: #8fd18a !important; }
+.ck.diskak { background: radial-gradient(circle, #ff4d4d 0%, #e03131 45%, transparent 75%), #b58863; }
+.ck svg { position: absolute; inset: 6%; width: 88%; height: 88%; pointer-events: none; }
+.ck:focus-visible { outline: 4px solid var(--fokus); outline-offset: -4px; z-index: 1; }
+
+.ck.tujuan::after {
+  content: "";
+  position: absolute;
+  inset: 36%;
+  border-radius: 50%;
+  background: rgba(35, 112, 50, 0.7);
+}
+.ck.tujuan-makan::after {
+  content: "";
+  position: absolute;
+  inset: 4%;
+  border-radius: 50%;
+  border: 5px solid rgba(201, 42, 42, 0.8);
+}
+
+.ck-angka, .ck-huruf {
+  position: absolute;
+  font-size: 0.6rem;
+  font-weight: 800;
+  line-height: 1;
+  pointer-events: none;
+}
+.ck-angka { top: 3px; left: 3px; }
+.ck-huruf { bottom: 3px; right: 4px; }
+.ck.terang .ck-angka, .ck.terang .ck-huruf { color: #8a5a32; }
+.ck.gelap .ck-angka, .ck.gelap .ck-huruf { color: #fbf3e4; }
+
+.catur-pesan { min-height: 1.45em; margin: 10px 0; font-weight: 700; color: var(--utama-gelap); }
+.catur-akhir { margin-bottom: 12px; }
+
+.catur-kanan h2 { font-size: 1.1rem; margin-top: 18px; }
+.catur-riwayat {
+  max-height: 260px;
+  overflow-y: auto;
+  margin: 0;
+  padding: 8px 12px;
+  list-style: none;
+  border: 3px solid var(--garis);
+  border-radius: 12px;
+  background: #fff;
+  font-family: ui-monospace, Consolas, monospace;
+}
+.catur-riwayat:empty::before { content: "Belum ada langkah."; color: var(--teks-lemah); font-family: inherit; }
+.catur-riwayat li { display: grid; grid-template-columns: 3em 1fr 1fr; gap: 6px; padding: 2px 0; }
+.catur-riwayat .no { color: var(--teks-lemah); }
+
+.catur-bantuan { margin-top: 16px; font-size: 0.9rem; }
+.catur-bantuan summary { font-weight: 800; cursor: pointer; min-height: 40px; }
+
+.catur-promosi { display: grid; grid-template-columns: repeat(auto-fit, minmax(110px, 1fr)); gap: 12px; }
+.catur-promosi .tombol { flex-direction: column; padding: 10px; }
+.catur-promosi-ikon { display: block; width: 64px; height: 64px; }
+.catur-promosi-ikon svg { width: 100%; height: 100%; }
+
+@media (max-width: 700px) {
+  .catur-kiri { width: 100%; }
+}

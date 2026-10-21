@@ -1,0 +1,27 @@
+<!doctype html>
+<html lang="id">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Uji Catur</title>
+  <link rel="stylesheet" href="css/base.css">
+  <style>
+    #hasil { padding-left: 1.2em; font-size: 0.9rem; }
+    #hasil li { margin-bottom: 4px; }
+    .lulus { color: var(--sukses); }
+    .gagal { color: var(--bahaya); font-weight: 700; }
+    #ringkasan { font-size: 1.2rem; font-weight: 800; }
+  </style>
+</head>
+<body>
+  <main class="layar layar-sempit">
+    <h1>Uji Mesin Catur</h1>
+    <p>Halaman ini menguji aturan catur: rokade, en passant, promosi, skakmat, dan remis.
+      Halaman ini untuk pengembang dan tidak ditampilkan di menu aplikasi.</p>
+    <p id="ringkasan">Menjalankan uji…</p>
+    <ol id="hasil"></ol>
+    <p><a href="./">← Kembali ke aplikasi</a></p>
+  </main>
+  <script type="module" src="js/games/catur/uji.js"></script>
+</body>
+</html>

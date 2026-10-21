@@ -8,6 +8,7 @@
 import { daftar } from '../core/registry.js';
 
 export const MODUL_GAME = [
+  './catur/index.js',
   './tebak-angka/index.js', // game uji Tahap 1, dihapus saat game sungguhan sudah ada
 ];
 
