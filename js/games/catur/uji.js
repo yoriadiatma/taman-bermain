@@ -1,6 +1,10 @@
 // uji.js — uji aturan catur, dijalankan dari test.html.
 
-import { Catur, AWAL, sanIndonesia } from './mesin.js';
+import { Catur, AWAL, sanIndonesia, langkahBebas, indeksKotak } from './mesin.js';
+import { cariLangkah, evaluasi } from './ai.js';
+import { mintaLangkah, hentikan } from './komputer.js';
+import { PELAJARAN } from './belajar.js';
+import { PUZZLE } from '../../../data/catur-puzzle.js';
 
 const daftar = [];
 const uji = (nama, fn) => daftar.push({ nama, fn });
@@ -273,6 +277,87 @@ for (const [nama, fen, harap] of PERFT) {
   });
 }
 
+
+// ---------- Puzzle ----------
+
+uji(`Semua ${PUZZLE.length} puzzle: posisi valid, solusinya skakmat`, () => {
+  benar(PUZZLE.length >= 15, 'minimal 15 puzzle');
+  const ids = new Set();
+  for (const p of PUZZLE) {
+    benar(!ids.has(p.id), `id puzzle ganda: ${p.id}`);
+    ids.add(p.id);
+    const c = new Catur(p.fen);
+    benar(!c.status().selesai && !c.skak(), `${p.id}: posisi awal tidak boleh sudah selesai atau skak`);
+    benar(c.jalan(p.solusi), `${p.id}: solusi ${p.solusi} tidak legal`);
+    sama(c.status().alasan, 'skakmat', `${p.id}:`);
+  }
+});
+
+// ---------- Belajar Bidak ----------
+
+uji('Belajar Bidak: gerak bidak di papan kosong', () => {
+  const papan = new Array(64).fill(null);
+  const taruh = (k, b) => { papan[indeksKotak(k)] = b; };
+  taruh('d4', 'N');
+  sama(langkahBebas(papan, indeksKotak('d4')).length, 8, 'kuda di tengah:');
+  papan.fill(null); taruh('a1', 'R');
+  sama(langkahBebas(papan, indeksKotak('a1')).length, 14, 'benteng di pojok:');
+  papan.fill(null); taruh('d4', 'Q');
+  sama(langkahBebas(papan, indeksKotak('d4')).length, 27, 'menteri di d4:');
+  papan.fill(null); taruh('e2', 'P'); taruh('d3', 'p');
+  sama(langkahBebas(papan, indeksKotak('e2')).sort(), ['e3', 'e4', 'd3'].map(indeksKotak).sort(), 'pion:');
+});
+
+uji('Belajar Bidak: semua bintang bisa dicapai', () => {
+  for (const pel of PELAJARAN) {
+    const papan = new Array(64).fill(null);
+    for (const [k, b] of Object.entries({ ...pel.teman, ...pel.musuh })) papan[indeksKotak(k)] = b;
+    let pos = indeksKotak(pel.mulai);
+    papan[pos] = pel.bidak;
+    for (const bintang of pel.bintang) {
+      const ke = indeksKotak(bintang);
+      benar(langkahBebas(papan, pos).includes(ke), `${pel.id}: tidak bisa ke ${bintang}`);
+      papan[ke] = papan[pos];
+      papan[pos] = null;
+      pos = ke;
+    }
+  }
+});
+
+// ---------- Komputer ----------
+
+uji('Komputer menemukan skakmat 1 langkah (semua tingkat kecuali langkah acak)', () => {
+  for (const t of ['sedang', 'sulit', 'petunjuk']) {
+    const c = new Catur('6k1/5ppp/8/8/8/8/8/R5K1 w - - 0 1');
+    c.jalan(cariLangkah(c.fen(), t).uci);
+    sama(c.status().alasan, 'skakmat', `tingkat ${t}:`);
+  }
+});
+
+uji('Komputer memakan menteri yang tidak dijaga', () => {
+  for (const t of ['sedang', 'sulit']) {
+    sama(cariLangkah('rnb1kbnr/pppp1ppp/8/4p3/4P2q/5N2/PPPP1PPP/RNBQKB1R w KQkq - 0 1', t).uci, 'f3h4', `tingkat ${t}:`);
+  }
+});
+
+uji('Komputer Mudah kadang melangkah acak, tetapi selalu legal', () => {
+  let acak = 0;
+  for (let i = 0; i < 30; i++) {
+    const r = cariLangkah(AWAL, 'mudah');
+    benar(new Catur().jalan(r.uci), `langkah ${r.uci} tidak legal`);
+    if (r.acak) acak++;
+  }
+  benar(acak > 0 && acak < 30, `jumlah langkah acak ${acak} dari 30`);
+});
+
+uji('Evaluasi posisi awal seimbang', () => sama(evaluasi(new Catur()), 0));
+
+uji('Komputer berjalan di Web Worker dan membalas langkah legal', async () => {
+  const r = await mintaLangkah(AWAL, 'sedang');
+  benar(new Catur().jalan(r.uci), `langkah ${r.uci} tidak legal`);
+  hentikan();
+});
+
 // ---------- Menjalankan ----------
 
 async function jalankan() {
@@ -282,7 +367,7 @@ async function jalankan() {
     const li = document.createElement('li');
     const mulai = performance.now();
     try {
-      fn();
+      await fn();
       lulus++;
       li.className = 'lulus';
       li.textContent = `✓ ${nama} (${Math.round(performance.now() - mulai)} ms)`;

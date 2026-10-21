@@ -4,7 +4,7 @@ Kumpulan game edukasi untuk anak SD kelas 4–6 (Kurikulum Merdeka), dengan muat
 Aplikasi web statis: HTML, CSS, dan JavaScript vanilla (ES modules), tanpa server, tanpa build tool,
 dan tanpa dependensi luar. Progres disimpan di `localStorage` browser masing-masing perangkat.
 
-> Status: **Tahap 3 (Catur: aturan lengkap, 2 pemain)**. Game: Catur dan game uji "Tebak Angka". README ini dilengkapi di Tahap 12.
+> Status: **Tahap 4 (Catur lengkap: AI, belajar, puzzle)**. Game: Catur dan game uji "Tebak Angka". README ini dilengkapi di Tahap 12.
 
 ## Menjalankan di komputer sendiri
 
@@ -63,8 +63,15 @@ Jika format data berubah, naikkan `SCHEMA` di `js/core/storage.js` dan tambahkan
 
 ## Uji otomatis
 
-Buka <http://localhost:8000/test.html> untuk menjalankan uji aturan catur (rokade, en passant, promosi,
-skakmat, remis, dan perft). Semua uji harus berwarna hijau. Halaman ini tidak tampil di menu aplikasi.
+Buka <http://localhost:8000/test.html> untuk menjalankan uji catur: aturan (rokade, en passant, promosi,
+skakmat, remis, perft), kebenaran semua puzzle, pelajaran Belajar Bidak, dan komputer (termasuk Web Worker). Semua uji harus berwarna hijau. Halaman ini tidak tampil di menu aplikasi.
+
+## Catur
+
+- Lawan komputer: Mudah (melihat 1 langkah, sering melangkah acak), Sedang (2 langkah), Sulit (sampai 5 langkah,
+  dibatasi sekitar 2 detik). Komputer berjalan di Web Worker (`js/games/catur/ai-worker.js`).
+- Puzzle ada di `data/catur-puzzle.js` (format FEN + langkah solusi UCI). Setelah menambah puzzle, buka `test.html`:
+  uji akan memastikan solusinya benar-benar skakmat.
 
 ## Mode Guru
 

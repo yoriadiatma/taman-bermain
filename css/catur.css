@@ -103,3 +103,42 @@
 @media (max-width: 700px) {
   .catur-kiri { width: 100%; }
 }
+
+/* Penanda tambahan */
+.ck.terancam { box-shadow: inset 0 0 0 5px #f76707; }
+.ck.petunjuk { box-shadow: inset 0 0 0 5px #1c6fd1; }
+.ck.petunjuk.terancam { box-shadow: inset 0 0 0 5px #1c6fd1, inset 0 0 0 10px #f76707; }
+.ck-bintang {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: clamp(1.2rem, 5vw, 2.4rem);
+  color: #f59f00;
+  text-shadow: 0 2px 0 #7a4a00;
+  pointer-events: none;
+  animation: bintang-kedip 1.4s ease-in-out infinite;
+}
+@keyframes bintang-kedip { 50% { transform: scale(1.15); } }
+.catur-papan.terkunci .ck { cursor: default; }
+
+/* Menu catur */
+.catur-menu { max-width: 1000px; }
+.catur-grid-menu { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 0 20px; }
+.catur-grid-menu .panel h2 { font-size: 1.2rem; }
+.catur-grid-menu .label-besar { font-size: 0.95rem; margin-top: 8px; }
+.catur-lanjut { display: flex; flex-wrap: wrap; gap: 16px; align-items: center; justify-content: space-between; background: #e7f5ff; }
+.catur-lanjut h2, .catur-lanjut p { margin: 0; }
+.catur-opsi { display: grid; gap: 6px; margin: 14px 0 4px; font-size: 0.9rem; font-weight: 700; }
+.catur-opsi label { display: flex; align-items: center; gap: 10px; min-height: 44px; cursor: pointer; }
+.catur-opsi input { width: 24px; height: 24px; flex-shrink: 0; }
+.catur-judul-mode { font-weight: 800; color: var(--utama-gelap); }
+
+.catur-grid-pilihan { display: grid; grid-template-columns: repeat(auto-fill, minmax(170px, 1fr)); gap: 12px; margin-bottom: 20px; }
+.catur-kartu-pilihan { flex-direction: column; align-items: flex-start; text-align: left; padding: 12px 14px; }
+.catur-kartu-pilihan .judul { font-size: 1.05rem; }
+.catur-kartu-pilihan .catatan { margin: 0; font-weight: 600; }
+.catur-kartu-pilihan.selesai { background: #d3f9d8; }
+.catur-teks-pelajaran { font-size: 1.05rem; }
+.catur-akhir { display: flex; flex-wrap: wrap; gap: 12px; }

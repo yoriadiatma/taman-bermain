@@ -435,6 +435,44 @@ export class Catur {
   }
 }
 
+/**
+ * Kotak tujuan bidak di `sq` pada papan bebas, tanpa memeriksa keamanan raja.
+ * Dipakai mode Belajar Bidak (papan berisi satu bidak, tanpa raja).
+ */
+export function langkahBebas(papan, sq) {
+  const b = papan[sq];
+  if (!b) return [];
+  const w = warnaBidak(b);
+  const t = tipe(b);
+  const hasil = [];
+  const milikLawan = i => papan[i] && warnaBidak(papan[i]) !== w;
+  if (t === 'p') {
+    const arah = w === 'w' ? -8 : 8;
+    const satu = sq + arah;
+    if (satu >= 0 && satu < 64 && !papan[satu]) {
+      hasil.push(satu);
+      const dua = satu + arah;
+      if (baris(sq) === (w === 'w' ? 6 : 1) && !papan[dua]) hasil.push(dua);
+    }
+    for (const dc of [-1, 1]) {
+      const c = kolom(sq) + dc;
+      if (c >= 0 && c < 8 && satu >= 0 && satu < 64 && milikLawan(satu + dc)) hasil.push(satu + dc);
+    }
+  } else if (t === 'n' || t === 'k') {
+    for (const ke of (t === 'n' ? LANGKAH_KUDA : LANGKAH_RAJA)[sq]) if (!papan[ke] || milikLawan(ke)) hasil.push(ke);
+  } else {
+    const daftarSinar = t === 'b' ? SINAR_DIAGONAL[sq] : t === 'r' ? SINAR_LURUS[sq] : [...SINAR_DIAGONAL[sq], ...SINAR_LURUS[sq]];
+    for (const s of daftarSinar) {
+      for (const ke of s) {
+        if (!papan[ke]) { hasil.push(ke); continue; }
+        if (milikLawan(ke)) hasil.push(ke);
+        break;
+      }
+    }
+  }
+  return hasil;
+}
+
 // Notasi catur Indonesia: R = Raja, M = Menteri, B = Benteng, G = Gajah, K = Kuda.
 // TODO verifikasi: singkatan ini mengikuti kebiasaan notasi catur berbahasa Indonesia.
 const HURUF_INDONESIA = { K: 'R', Q: 'M', R: 'B', B: 'G', N: 'K' };
