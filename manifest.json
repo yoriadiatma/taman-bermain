@@ -1,0 +1,15 @@
+{
+  "name": "Taman Game Belajar",
+  "short_name": "Game Belajar",
+  "description": "Kumpulan game edukasi untuk anak SD kelas 4-6.",
+  "lang": "id",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "any",
+  "background_color": "#fff6e0",
+  "theme_color": "#1c6fd1",
+  "icons": [
+    { "src": "ikon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any" }
+  ]
+}

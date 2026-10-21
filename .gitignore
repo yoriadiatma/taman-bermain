@@ -1,0 +1,7 @@
+# Sistem operasi
+.DS_Store
+Thumbs.db
+
+# Alat pengembangan lokal
+node_modules/
+.claude/

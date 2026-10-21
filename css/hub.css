@@ -1,0 +1,130 @@
+/* hub.css — layar profil, menu utama, pengaturan, dan Mode Guru. */
+
+/* Pilih profil */
+.grid-profil {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 20px;
+  margin-bottom: 24px;
+}
+.kartu-profil { display: flex; flex-direction: column; gap: 10px; align-items: stretch; }
+.pilih-profil, .kartu-baru {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  min-height: 220px;
+  padding: 20px 12px;
+  border: 3px solid var(--garis);
+  border-radius: var(--radius);
+  background: var(--kartu);
+  box-shadow: var(--bayang);
+  cursor: pointer;
+  touch-action: manipulation;
+  transition: transform 0.1s;
+}
+.pilih-profil:hover, .kartu-baru:hover, .kartu-game:hover { transform: translateY(-3px); }
+.pilih-profil:active, .kartu-baru:active, .kartu-game:active { transform: translateY(2px); }
+.nama-profil { font-size: 1.3rem; font-weight: 800; word-break: break-word; text-align: center; }
+.kelas-profil { color: var(--teks-lemah); font-weight: 700; }
+.kartu-baru { justify-content: center; border-style: dashed; background: var(--latar-2); font-weight: 800; font-size: 1.1rem; }
+.kartu-baru .plus { font-size: 3rem; line-height: 1; }
+.bawah-layar { display: flex; justify-content: center; }
+
+/* Formulir profil */
+.form-profil { max-width: 760px; }
+.form-profil .masukan { margin-bottom: 20px; max-width: 420px; }
+.grid-avatar {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(76px, 1fr));
+  gap: 12px;
+  margin-bottom: 20px;
+}
+.pilih-avatar {
+  aspect-ratio: 1;
+  padding: 0;
+  border: 3px solid var(--garis);
+  border-radius: 14px;
+  overflow: hidden;
+  background: #fff;
+  cursor: pointer;
+  touch-action: manipulation;
+}
+.pilih-avatar svg { display: block; width: 100%; height: 100%; }
+.pilih-avatar[aria-pressed="true"] { outline: 6px solid var(--utama); outline-offset: 2px; }
+.grup-kelas { display: flex; flex-wrap: wrap; gap: 12px; margin-bottom: 8px; }
+.pilih-kelas { min-width: 120px; font-size: 1.1rem; }
+
+/* Hub */
+.menu-atas { display: flex; flex-wrap: wrap; gap: 10px; }
+.sapaan { display: flex; align-items: center; gap: 16px; margin-bottom: 20px; }
+.sapaan h1 { margin-bottom: 4px; word-break: break-word; }
+.sapaan p { margin: 0; }
+.cadangan { display: flex; flex-wrap: wrap; gap: 16px; align-items: center; justify-content: space-between; background: #e7f5ff; }
+.cadangan h2 { margin-bottom: 4px; }
+.cadangan p { margin: 0; max-width: 560px; }
+
+.grid-game {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+  gap: 20px;
+}
+.kartu-game {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 8px;
+  padding: 16px;
+  border: 3px solid var(--garis);
+  border-radius: var(--radius);
+  background: var(--kartu);
+  box-shadow: var(--bayang);
+  text-align: left;
+  cursor: pointer;
+  touch-action: manipulation;
+  transition: transform 0.1s;
+}
+.ikon-game { width: 88px; height: 88px; border: 3px solid var(--garis); border-radius: 16px; overflow: hidden; }
+.ikon-game svg { display: block; width: 100%; height: 100%; }
+.nama-game { font-size: 1.25rem; font-weight: 800; }
+.deskripsi-game { color: var(--teks-lemah); font-size: 0.9rem; }
+.baris-chip { display: flex; flex-wrap: wrap; gap: 6px; }
+.chip-kelas { background: var(--peringatan); }
+.progres-game { display: flex; align-items: center; gap: 10px; font-size: 0.85rem; font-weight: 700; margin-top: auto; }
+
+/* Pengaturan */
+.baris-pengaturan {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 12px 0;
+  border-bottom: 2px dashed #d5d9e0;
+}
+.baris-pengaturan + .baris-tombol { margin-top: 20px; }
+.baris-pengaturan .label-besar { margin: 0; }
+.sakelar {
+  min-width: 120px;
+  min-height: var(--tinggi-tombol);
+  border: 3px solid var(--garis);
+  border-radius: 999px;
+  background: #dee2e6;
+  font-weight: 800;
+  cursor: pointer;
+}
+.sakelar[aria-checked="true"] { background: var(--sukses); color: #fff; }
+.geser { width: min(320px, 60%); height: 40px; accent-color: var(--utama); }
+
+/* Mode Guru */
+.layar-guru { max-width: 900px; }
+.kunci-guru { max-width: 420px; }
+.baris-profil-guru {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 0;
+  border-bottom: 2px dashed #d5d9e0;
+}
+.info-profil { display: flex; flex-direction: column; flex: 1; min-width: 160px; }
+.info-profil span { color: var(--teks-lemah); font-size: 0.85rem; }
