@@ -4,7 +4,7 @@
 // baru ke BERKAS. Saat versi naik, cache lama milik aplikasi ini dihapus.
 // Service worker tidak didaftarkan di localhost kecuali dengan ?sw di URL (lihat js/main.js).
 
-const VERSI_CACHE = 'tgb-v12';
+const VERSI_CACHE = 'tgb-v13';
 // Origin <username>.github.io dipakai bersama project lain: hanya sentuh cache berawalan ini.
 const AWALAN_CACHE = 'tgb-';
 

@@ -209,8 +209,12 @@ button, input, select, textarea { font: inherit; color: inherit; }
 @keyframes toast-masuk { from { opacity: 0; transform: translateY(10px); } }
 
 /* Papan angka */
-.papan-angka { display: grid; gap: 12px; max-width: 340px; }
+/* min-width: 0 dan width: 100% agar lebar bawaan <input> tidak mendorong papan keluar dari panel. */
+.papan-angka { display: grid; grid-template-columns: minmax(0, 1fr); gap: 12px; width: 100%; max-width: 340px; }
+.papan-angka > * { min-width: 0; }
 .papan-tampil {
+  width: 100%;
+  min-width: 0;
   min-height: 64px;
   padding: 8px 16px;
   border: 3px solid var(--garis);
@@ -221,8 +225,8 @@ button, input, select, textarea { font: inherit; color: inherit; }
   text-align: center;
   letter-spacing: 4px;
 }
-.papan-tombol { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
-.tombol-angka { font-size: 1.4rem; min-height: 64px; padding: 0; }
+.papan-tombol { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; }
+.tombol-angka { font-size: 1.4rem; min-height: 64px; min-width: 0; padding: 0; }
 
 /* Layar game */
 .layar-game { max-width: 1280px; margin: 0 auto; padding: 12px 16px 32px; }

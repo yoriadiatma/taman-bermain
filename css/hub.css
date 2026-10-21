@@ -118,6 +118,7 @@
 /* Mode Guru */
 .layar-guru { max-width: 900px; }
 .kunci-guru { max-width: 420px; }
+.kunci-guru .papan-angka { max-width: none; }
 .baris-profil-guru {
   display: flex;
   flex-wrap: wrap;
