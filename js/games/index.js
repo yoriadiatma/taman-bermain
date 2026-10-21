@@ -10,6 +10,7 @@ import { daftar } from '../core/registry.js';
 export const MODUL_GAME = [
   './blok/index.js',
   './catur/index.js',
+  './jelajah/index.js',
   './kata/index.js',
   './kebun/index.js',
   './pasangan/index.js',

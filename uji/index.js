@@ -3,6 +3,7 @@
 import { jalankan } from './alat.js';
 import '../js/games/catur/uji.js';
 import '../js/games/blok/uji.js';
+import '../js/games/jelajah/uji.js';
 import '../js/games/kata/uji.js';
 import '../js/games/kebun/uji.js';
 import '../js/games/pasangan/uji.js';

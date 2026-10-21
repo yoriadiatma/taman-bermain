@@ -4,7 +4,7 @@ Kumpulan game edukasi untuk anak SD kelas 4–6 (Kurikulum Merdeka), dengan muat
 Aplikasi web statis: HTML, CSS, dan JavaScript vanilla (ES modules), tanpa server, tanpa build tool,
 dan tanpa dependensi luar. Progres disimpan di `localStorage` browser masing-masing perangkat.
 
-> Status: **Tahap 10**. Game: Blok Petualang, Catur, Petualangan Kata, Kebun Ceria, Pasangan Kilat, Pasar Mini, Ular Tangga Matematika. README ini dilengkapi di Tahap 12.
+> Status: **Tahap 11**. Game: Blok Petualang, Catur, Jelajah Nusantara, Petualangan Kata, Kebun Ceria, Pasangan Kilat, Pasar Mini, Ular Tangga Matematika. README ini dilengkapi di Tahap 12.
 
 ## Menjalankan di komputer sendiri
 
@@ -42,7 +42,7 @@ Jalankan server di laptop, lalu dari tablet buka `http://<IP-laptop>:8000/`.
 ```
 index.html, manifest.json, sw.js, ikon.svg, .nojekyll
 css/            base.css, hub.css, satu css per game
-data/           bank soal (questions.js + soal/), avatar, ungkapan
+data/           bank soal (questions.js + soal/), avatar, ungkapan, data tiap game (mis. nusantara.js)
 js/main.js      titik masuk
 js/core/        storage, profile, router, registry, ui, audio, quiz, quiz-ui, teacher, mapel, cadangan
 js/screens/     layar profil, hub, permainan, pengaturan
@@ -72,6 +72,7 @@ Buka <http://localhost:8000/test.html> untuk menjalankan semua uji otomatis:
 - Blok Petualang: dunia dari seed, diff simpanan, fisika pemain, tas, resep (soal hitungannya selalu benar), menambang, menaruh, rumah, misi, dan peti.
 - Pasangan Kilat: jumlah kartu, tidak ada kartu kembar, jawaban hitungan dan nilai pecahan benar.
 - Ular Tangga: posisi tangga/ular/petak soal tidak bertumpuk, bonus tidak mendarat di kepala ular, penomoran papan.
+- Jelajah Nusantara: 38 provinsi per wilayah, ibu kota terbaru, setiap pin berada di daratan pulau wilayahnya, nama budaya/sejarah unik, setiap ronde misi valid untuk tiap wilayah dan kelas.
 - Petualangan Kata: data kata (huruf kapital, unik), labirin selalu tersambung, huruf kata tidak pernah tertutup gerbang, pengecoh dari ejaan keliru.
 - Kebun Ceria: tumbuh hanya jika disiram, layu dan pulih, hujan, kompos, ternak, jual beli, soal siklus dan soal membagi panen.
 - Pasar Mini: total, diskon, pembayaran, dan kembalian selalu benar; susunan uang paling sedikit (dibandingkan dengan pencarian lengkap); soal infak.
@@ -106,6 +107,20 @@ File uji tiap game ada di `js/games/<id>/uji.js` dan didaftarkan di `uji/index.j
   Kata & Emoji, Hewan & Tumbuhan. Jumlah kartu 8–24, pilihan mengikuti kelas.
 - Daftar kata, emoji, dan ciri makhluk hidup ada di `data/pasangan.js`; setiap teks harus unik di daftarnya.
 - Rekor terbaik (bintang, waktu, percobaan) disimpan per tema dan jumlah kartu.
+
+## Jelajah Nusantara
+
+- Peta Indonesia digambar sendiri dari titik-titik perkiraan (`js/games/jelajah/peta.js`), jadi **bukan peta berskala**.
+  Pin provinsi diletakkan dekat ibu kota. Peta bisa digeser, dicubit, diperbesar dengan tombol +/−, atau Ctrl + gulir.
+- Pilih wilayah → kapal berlayar ke sana. Ketuk pin untuk membaca kartu provinsi (ibu kota, rumah adat, budaya, jejak Islam).
+- Misi 5 soal per wilayah, bergantian "ketuk provinsinya di peta" dan soal pilihan ganda. Salah ketuk menyebut provinsi
+  yang diketuk; setelah 2 kali salah muncul petunjuk arah mata angin. Jawaban benar memberi 📮 stempel paspor.
+- Isi per kelas: kelas 4 provinsi & ibu kota; kelas 5 ditambah rumah adat & budaya; kelas 6 ditambah sejarah Islam
+  Nusantara (kerajaan Islam, masjid bersejarah, Wali Songo, tokoh).
+- Data ada di `data/nusantara.js` (38 provinsi per 2024). Butir bertanda `cek: true` dan komentar `TODO verifikasi`
+  mohon dicek guru, antara lain: ibu kota Kalimantan Selatan (Banjarbaru sejak 2022), ibu kota Papua Pegunungan,
+  status Jakarta/IKN, dan beberapa nama rumah adat. Butir yang diragukan sengaja dikosongkan, bukan dikarang.
+- Setelah menambah data, buka `test.html`: uji memastikan pin ada di daratan dan nama budaya tidak dipakai dua provinsi.
 
 ## Petualangan Kata
 

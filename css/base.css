@@ -100,6 +100,7 @@ button, input, select, textarea { font: inherit; color: inherit; }
 .tombol.bahaya { background: var(--bahaya); color: #fff; }
 .tombol.kecil { --tinggi-tombol: 48px; padding: 6px 14px; font-size: 0.85rem; }
 .tombol[aria-pressed="true"] { background: var(--utama); color: #fff; }
+.tombol.kedua[aria-pressed="true"]:hover { background: var(--utama-gelap); }
 
 .baris-tombol { display: flex; flex-wrap: wrap; gap: 12px; align-items: center; }
 
