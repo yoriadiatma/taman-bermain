@@ -27,6 +27,12 @@ export function el(tag, props = {}, ...anak) {
   return e;
 }
 
+/** Ganti isi elemen. Seperti replaceChildren, tetapi null/false/undefined dilewati (seperti el()). */
+export function isiUlang(elemen, ...anak) {
+  elemen.replaceChildren(...anak.flat(Infinity).filter(a => a != null && a !== false).map(a => (a instanceof Node ? a : String(a))));
+  return elemen;
+}
+
 const acak = daftar => daftar[Math.floor(Math.random() * daftar.length)];
 export const pujian = () => acak(PUJIAN);
 export const semangat = () => acak(SEMANGAT);

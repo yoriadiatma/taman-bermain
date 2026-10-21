@@ -4,7 +4,7 @@ Kumpulan game edukasi untuk anak SD kelas 4–6 (Kurikulum Merdeka), dengan muat
 Aplikasi web statis: HTML, CSS, dan JavaScript vanilla (ES modules), tanpa server, tanpa build tool,
 dan tanpa dependensi luar. Progres disimpan di `localStorage` browser masing-masing perangkat.
 
-> Status: **Tahap 6 (Blok Petualang lengkap)**. Game: Catur, Blok Petualang, dan game uji "Tebak Angka". README ini dilengkapi di Tahap 12.
+> Status: **Tahap 7**. Game: Blok Petualang, Catur, Pasangan Kilat, Ular Tangga Matematika. README ini dilengkapi di Tahap 12.
 
 ## Menjalankan di komputer sendiri
 
@@ -16,6 +16,9 @@ python -m http.server 8000
 ```
 
 Lalu buka <http://localhost:8000/>. Alternatif dengan Node.js: `npx serve`.
+
+Setelah mengubah file, muat ulang dengan **Ctrl+F5** (atau Ctrl+Shift+R). Server sederhana di atas tidak
+melarang browser menyimpan file lama di cache, jadi muat ulang biasa kadang masih memakai versi lama.
 
 ### Menguji di subfolder (seperti GitHub Pages)
 
@@ -67,6 +70,8 @@ Buka <http://localhost:8000/test.html> untuk menjalankan semua uji otomatis:
 
 - Catur: aturan (rokade, en passant, promosi, skakmat, remis, perft), kebenaran semua puzzle, pelajaran Belajar Bidak, dan komputer (termasuk Web Worker).
 - Blok Petualang: dunia dari seed, diff simpanan, fisika pemain, tas, resep (soal hitungannya selalu benar), menambang, menaruh, rumah, misi, dan peti.
+- Pasangan Kilat: jumlah kartu, tidak ada kartu kembar, jawaban hitungan dan nilai pecahan benar.
+- Ular Tangga: posisi tangga/ular/petak soal tidak bertumpuk, bonus tidak mendarat di kepala ular, penomoran papan.
 
 File uji tiap game ada di `js/games/<id>/uji.js` dan didaftarkan di `uji/index.js`. Semua uji harus berwarna hijau. Halaman ini tidak tampil di menu aplikasi.
 
@@ -91,6 +96,20 @@ File uji tiap game ada di `js/games/<id>/uji.js` dan didaftarkan di `uji/index.j
   - **Buku Barang**: menyusun huruf acak menjadi nama barang (ejaan).
 - Hasil soal tercatat di statistik Mode Guru.
 - Tambahkan `?debug` di URL (mis. `http://localhost:8000/?debug#/main/blok`) untuk menampilkan FPS.
+
+## Pasangan Kilat
+
+- 4 tema: Hitung Cepat (soal dibuat otomatis sesuai kelas), Pecahan (gambar, pecahan senilai, persen/desimal),
+  Kata & Emoji, Hewan & Tumbuhan. Jumlah kartu 8–24, pilihan mengikuti kelas.
+- Daftar kata, emoji, dan ciri makhluk hidup ada di `data/pasangan.js`; setiap teks harus unik di daftarnya.
+- Rekor terbaik (bintang, waktu, percobaan) disimpan per tema dan jumlah kartu.
+
+## Ular Tangga Matematika
+
+- 2–4 pemain di satu perangkat; pemain boleh manusia atau komputer, dan setiap pemain punya kelasnya sendiri.
+- Petak ❓ memberi soal matematika dari bank soal sesuai kelas pemain: benar maju 3 petak, salah tetap di tempat.
+  Statistik soal hanya dicatat untuk pemain pemilik profil.
+- Letak tangga, ular, dan petak soal ada di `js/games/ular-tangga/aturan.js`.
 
 ## Mode Guru
 
@@ -146,7 +165,7 @@ tampil di Mode Guru dan bisa diekspor ke CSV/JSON.
 
 1. Buat folder `js/games/<id>/index.js` yang mengekspor definisi game
    (`id, nama, deskripsi, ikon, kelasMin, kelasMax, mapel, mount(container, ctx), unmount()`;
-   lihat komentar di `js/core/registry.js`). Contoh: `js/games/tebak-angka/index.js`.
+   lihat komentar di `js/core/registry.js`). Contoh yang paling sederhana: `js/games/pasangan/index.js`.
 2. Tambahkan satu baris path di `MODUL_GAME` dalam `js/games/index.js`.
 3. Jika game punya CSS, buat `css/<id>.css` dan isi field `css`.
 4. Tambahkan semua file baru ke daftar `BERKAS` di `sw.js` dan naikkan versi cache.

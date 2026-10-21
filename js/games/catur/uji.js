@@ -317,17 +317,20 @@ uji('Belajar Bidak: semua bintang bisa dicapai', () => {
 
 // ---------- Komputer ----------
 
-uji('Komputer menemukan skakmat 1 langkah (semua tingkat kecuali langkah acak)', () => {
+// Angka acak tetap 0,5: tidak pernah memicu langkah acak dan derau bernilai 0, jadi hasil uji selalu sama.
+const tanpaAcak = () => 0.5;
+
+uji('Komputer menemukan skakmat 1 langkah (Sedang, Sulit, Petunjuk)', () => {
   for (const t of ['sedang', 'sulit', 'petunjuk']) {
     const c = new Catur('6k1/5ppp/8/8/8/8/8/R5K1 w - - 0 1');
-    c.jalan(cariLangkah(c.fen(), t).uci);
+    c.jalan(cariLangkah(c.fen(), t, tanpaAcak).uci);
     sama(c.status().alasan, 'skakmat', `tingkat ${t}:`);
   }
 });
 
 uji('Komputer memakan menteri yang tidak dijaga', () => {
   for (const t of ['sedang', 'sulit']) {
-    sama(cariLangkah('rnb1kbnr/pppp1ppp/8/4p3/4P2q/5N2/PPPP1PPP/RNBQKB1R w KQkq - 0 1', t).uci, 'f3h4', `tingkat ${t}:`);
+    sama(cariLangkah('rnb1kbnr/pppp1ppp/8/4p3/4P2q/5N2/PPPP1PPP/RNBQKB1R w KQkq - 0 1', t, tanpaAcak).uci, 'f3h4', `tingkat ${t}:`);
   }
 });
 

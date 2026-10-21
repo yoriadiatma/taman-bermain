@@ -10,7 +10,8 @@ import { daftar } from '../core/registry.js';
 export const MODUL_GAME = [
   './blok/index.js',
   './catur/index.js',
-  './tebak-angka/index.js', // game uji Tahap 1, dihapus saat game sungguhan sudah ada
+  './pasangan/index.js',
+  './ular-tangga/index.js',
 ];
 
 /** Muat dan daftarkan semua game. Mengembalikan daftar path yang gagal. */

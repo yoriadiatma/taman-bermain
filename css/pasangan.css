@@ -1,0 +1,98 @@
+/* pasangan.css — game Pasangan Kilat. */
+
+.pk-menu { max-width: 900px; }
+.pk-grid-tema { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 14px; margin-bottom: 16px; }
+.pk-tema {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 6px;
+  padding: 14px;
+  border: 3px solid var(--garis);
+  border-radius: var(--radius);
+  background: var(--kartu);
+  box-shadow: var(--bayang);
+  text-align: left;
+  cursor: pointer;
+  touch-action: manipulation;
+}
+.pk-tema:hover { transform: translateY(-2px); }
+.pk-tema strong { font-size: 1.1rem; }
+.pk-tema .catatan { margin: 0; }
+.pk-tema-ikon { font-size: 2rem; line-height: 1; }
+.pk-rekor { font-size: 0.8rem; font-weight: 700; }
+.pk-rekor .bintang { font-size: 0.95rem; }
+
+.pk { max-width: 980px; }
+.pk-bilah { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 14px; margin-bottom: 8px; }
+.pk-info { font-weight: 800; }
+.pk-penjelasan { min-height: 1.5em; font-weight: 700; color: var(--utama-gelap); }
+
+.pk-grid { display: grid; gap: 10px; max-width: 900px; }
+.pk-kartu {
+  position: relative;
+  aspect-ratio: 3 / 4;
+  max-height: 22vh;
+  width: 100%;
+  padding: 0;
+  border: 0;
+  background: none;
+  cursor: pointer;
+  perspective: 600px;
+  touch-action: manipulation;
+}
+.pk-kartu:disabled { cursor: default; }
+.pk-dalam {
+  position: absolute;
+  inset: 0;
+  transform-style: preserve-3d;
+  transition: transform 0.35s ease;
+}
+.pk-kartu.terbuka .pk-dalam { transform: rotateY(180deg); }
+.pk-belakang, .pk-depan {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 6px;
+  border: 3px solid var(--garis);
+  border-radius: 14px;
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+  overflow: hidden;
+}
+.pk-belakang {
+  background: repeating-linear-gradient(45deg, #1c6fd1 0 10px, #3b82e0 10px 20px);
+  color: #fff;
+  font-size: 2rem;
+  font-weight: 900;
+}
+.pk-depan { background: #fff; transform: rotateY(180deg); text-align: center; }
+.pk-kartu.ketemu .pk-depan { background: #d3f9d8; border-color: var(--sukses); }
+.pk-kartu:focus-visible { outline: 4px solid var(--fokus); outline-offset: 3px; border-radius: 14px; }
+
+.pk-teks { font-size: clamp(0.8rem, 2.4vw, 1.4rem); font-weight: 800; line-height: 1.2; overflow-wrap: anywhere; }
+.pk-teks.panjang { font-size: clamp(0.7rem, 1.6vw, 0.95rem); }
+.pk-emoji { font-size: clamp(2rem, 6vw, 3.4rem); line-height: 1; }
+.pk-gambar { width: 80%; }
+.pk-gambar svg { display: block; width: 100%; height: auto; }
+.pk-pecahan { display: inline-flex; flex-direction: column; align-items: center; font-size: clamp(1.2rem, 3.5vw, 2rem); font-weight: 900; line-height: 1.1; }
+.pk-pecahan span:first-child { border-bottom: 4px solid var(--teks); padding: 0 6px; }
+
+.pk-menang { text-align: center; }
+.pk-menang .bintang { font-size: 2.4rem; display: block; margin-bottom: 8px; }
+.pk-menang .baris-tombol { justify-content: center; }
+.pk-rekor-baru { font-weight: 800; color: var(--peringatan); }
+
+@media (max-width: 520px) {
+  /* Di layar sempit: paling banyak 4 kolom agar kata tidak terpotong. */
+  .pk-grid { grid-template-columns: repeat(4, minmax(0, 1fr)) !important; gap: 8px; }
+  .pk-kartu { max-height: none; aspect-ratio: 4 / 5; }
+  .pk-teks { font-size: clamp(0.7rem, 3.4vw, 1rem); }
+  .pk-teks.panjang { font-size: 0.68rem; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .pk-dalam { transition: none; }
+}

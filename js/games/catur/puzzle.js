@@ -1,6 +1,6 @@
 // puzzle.js — puzzle "skakmat dalam 1 langkah".
 
-import { el, pujian } from '../../core/ui.js';
+import { el, isiUlang, pujian } from '../../core/ui.js';
 import { Catur, NAMA_BIDAK, NAMA_WARNA, namaKotak, tipe, warnaBidak, indeksKotak } from './mesin.js';
 import { buatPapan, pilihPromosi, tutupDialogPromosi } from './papan.js';
 import { daftarSelesai, tandaiSelesai, bacaPengaturan } from './simpanan.js';
@@ -62,7 +62,7 @@ export function tampilPuzzle(wadah, ctx, { kembali }) {
     }
 
     function tampilBantuan() {
-      e.bantuan.replaceChildren(
+      isiUlang(e.bantuan,
         salah >= 1 && el('button', {
           class: 'tombol kedua', type: 'button',
           onclick: () => { e.pesan.textContent = `Petunjuk: ${pz.petunjuk}`; },
@@ -98,7 +98,7 @@ export function tampilPuzzle(wadah, ctx, { kembali }) {
         e.pesan.textContent = `${pujian()} ${pz.tema}.`;
         e.bantuan.replaceChildren();
         e.selesai.hidden = false;
-        e.selesai.replaceChildren(
+        isiUlang(e.selesai,
           PUZZLE[i + 1] && el('button', { class: 'tombol utama', type: 'button', onclick: () => buka(i + 1) }, 'Puzzle berikutnya'),
           el('button', { class: 'tombol kedua', type: 'button', onclick: daftar }, 'Daftar puzzle'));
       } else {

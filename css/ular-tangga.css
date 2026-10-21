@@ -1,0 +1,78 @@
+/* ular-tangga.css — game Ular Tangga Matematika. */
+
+.ut-atur { max-width: 820px; }
+.ut-lanjut { display: flex; flex-wrap: wrap; gap: 14px; align-items: center; justify-content: space-between; background: #e7f5ff; }
+.ut-lanjut h2, .ut-lanjut p { margin: 0; }
+.ut-daftar-pemain { display: grid; gap: 10px; margin-bottom: 12px; }
+.ut-baris-pemain { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; }
+.ut-baris-pemain .masukan { width: auto; flex: 1 1 140px; min-height: 48px; font-size: 1rem; }
+.ut-baris-pemain select.masukan { flex: 0 1 140px; }
+.ut-titik { display: inline-block; width: 22px; height: 22px; border: 3px solid var(--garis); border-radius: 50%; flex-shrink: 0; }
+.ut-aturan ul { padding-left: 1.2em; }
+
+.ut { display: flex; flex-wrap: wrap; gap: 20px; align-items: flex-start; }
+.ut-kiri { flex: 0 1 auto; width: min(100%, 640px, calc(100vh - 150px)); min-width: 280px; }
+.ut-kanan { flex: 1 1 260px; min-width: 240px; }
+
+.ut-papan {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 1;
+  border: 5px solid #5c3d20;
+  border-radius: 8px;
+  overflow: hidden;
+  background: #fff;
+}
+.ut-grid { display: grid; grid-template-columns: repeat(10, 1fr); width: 100%; height: 100%; }
+.ut-petak { position: relative; background: #fff4d6; border: 1px solid rgba(92, 61, 32, 0.25); }
+.ut-petak.gelap { background: #ffe0a3; }
+.ut-petak.soal { background: #a5d8ff; }
+.ut-nomor { position: absolute; top: 2px; left: 3px; font-size: clamp(0.5rem, 1.4vw, 0.75rem); font-weight: 800; color: #5c3d20; }
+.ut-tanya { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; font-size: clamp(0.9rem, 3vw, 1.6rem); font-weight: 900; color: #1c6fd1; }
+.ut-finis { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; font-size: clamp(1rem, 3vw, 1.8rem); }
+.ut-gambar { position: absolute; inset: 0; pointer-events: none; }
+.ut-gambar svg { width: 100%; height: 100%; }
+
+.ut-pion {
+  position: absolute;
+  width: 6.4%;
+  aspect-ratio: 1;
+  transform: translate(-50%, -50%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 3px solid #fff;
+  border-radius: 50%;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+  color: #fff;
+  font-weight: 900;
+  font-size: clamp(0.55rem, 1.6vw, 0.9rem);
+  transition-property: left, top;
+  transition-timing-function: ease-in-out;
+  z-index: 2;
+}
+
+.ut-status { margin: 0 0 12px; padding: 10px 14px; border: 4px solid var(--garis); border-radius: 14px; background: #fff; font-weight: 800; font-size: 1.1rem; }
+.ut-aksi { display: flex; align-items: center; gap: 16px; margin-bottom: 14px; }
+.ut-dadu { width: 80px; height: 80px; flex-shrink: 0; }
+.ut-dadu svg { width: 100%; height: 100%; }
+.ut-dadu.berputar { animation: dadu-goyang 0.14s linear infinite; }
+@keyframes dadu-goyang { 0% { transform: rotate(-10deg); } 50% { transform: rotate(10deg); } 100% { transform: rotate(-10deg); } }
+.ut-tombol-lempar { font-size: 1.15rem; min-height: 64px; }
+
+.ut-skor { list-style: none; padding: 0; margin: 0 0 12px; display: grid; gap: 6px; }
+.ut-skor li { display: flex; align-items: center; gap: 8px; padding: 6px 10px; border: 2px solid #d5d9e0; border-radius: 10px; font-size: 0.9rem; }
+.ut-skor li strong { margin-left: auto; }
+.ut-skor li.aktif { border-color: var(--utama); background: #e7f5ff; }
+.ut-kanan h2 { font-size: 1rem; margin: 10px 0 6px; }
+.ut-log { list-style: none; padding: 0; margin: 0 0 12px; font-size: 0.85rem; display: grid; gap: 4px; }
+.ut-log li:first-child { font-weight: 800; }
+.ut-akhir { text-align: center; }
+.ut-akhir .baris-tombol { justify-content: center; }
+
+@media (max-width: 700px) {
+  .ut-kiri { width: 100%; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .ut-dadu.berputar { animation: none; }
+}

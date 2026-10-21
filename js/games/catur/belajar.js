@@ -1,7 +1,7 @@
 // belajar.js — mode "Belajar Bidak": satu bidak di papan kosong, kumpulkan semua bintang.
 // Ketuk bidak untuk melihat kotak yang bisa dituju (disorot), lalu ketuk tujuan.
 
-import { el, pujian } from '../../core/ui.js';
+import { el, isiUlang, pujian } from '../../core/ui.js';
 import { indeksKotak, langkahBebas, NAMA_BIDAK } from './mesin.js';
 import { buatPapan } from './papan.js';
 import { daftarSelesai, tandaiSelesai } from './simpanan.js';
@@ -115,7 +115,7 @@ export function tampilBelajar(wadah, ctx, { kembali }) {
       e.pesan.textContent = `${e.pesan.textContent} ${pujian()}`.trim();
       e.selesai.hidden = false;
       const berikut = PELAJARAN[i + 1];
-      e.selesai.replaceChildren(
+      isiUlang(e.selesai,
         berikut && el('button', { class: 'tombol utama', type: 'button', onclick: () => buka(i + 1) }, 'Pelajaran berikutnya'),
         el('button', { class: 'tombol kedua', type: 'button', onclick: () => buka(i) }, 'Ulangi'),
         el('button', { class: 'tombol kedua', type: 'button', onclick: daftar }, 'Daftar pelajaran'));
